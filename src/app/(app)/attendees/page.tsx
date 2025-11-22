@@ -24,10 +24,10 @@ export default function AttendeesPage() {
     <div className="flex flex-1 flex-col p-4 md:p-6">
       <header className="mb-6">
         <h1 className="font-headline text-3xl font-semibold tracking-tight">
-          Attendees
+          참석자
         </h1>
         <p className="text-muted-foreground">
-          Meet the participants of SeminarSync.
+          SeminarSync 참여자들을 만나보세요.
         </p>
       </header>
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
