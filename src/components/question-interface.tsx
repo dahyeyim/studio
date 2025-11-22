@@ -1,0 +1,219 @@
+'use client';
+
+import { useState } from 'react';
+import { useForm, type SubmitHandler } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { useFormState, useFormStatus } from 'react-dom';
+
+import { Button } from '@/components/ui/button';
+import { Textarea } from '@/components/ui/textarea';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion';
+import { Badge } from '@/components/ui/badge';
+import { getPrioritizedQuestions } from '@/app/actions';
+import type { PrioritizeQuestionsOutput } from '@/ai/flows/prioritize-questions-with-ai';
+import { Loader2, Sparkles, AlertCircle } from 'lucide-react';
+import { Alert, AlertDescription, AlertTitle } from './ui/alert';
+
+const formSchema = z.object({
+  question: z
+    .string()
+    .min(10, 'Question must be at least 10 characters long.')
+    .max(500, 'Question must be no more than 500 characters.'),
+});
+
+type FormValues = z.infer<typeof formSchema>;
+
+interface QuestionInterfaceProps {
+  presentationTopic: string;
+}
+
+const initialState: {
+  prioritizedQuestions?: PrioritizeQuestionsOutput;
+  error?: string;
+} = {};
+
+function PrioritizeButton() {
+  const { pending } = useFormStatus();
+  return (
+    <Button type="submit" disabled={pending} variant="outline">
+      {pending ? (
+        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+      ) : (
+        <Sparkles className="mr-2 h-4 w-4 text-accent" />
+      )}
+      Prioritize with AI
+    </Button>
+  );
+}
+
+export function QuestionInterface({
+  presentationTopic,
+}: QuestionInterfaceProps) {
+  const [questions, setQuestions] = useState<string[]>([]);
+  const [state, formAction] = useFormState(
+    getPrioritizedQuestions,
+    initialState
+  );
+
+  const form = useForm<FormValues>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      question: '',
+    },
+  });
+
+  const onSubmit: SubmitHandler<FormValues> = (data) => {
+    setQuestions((prev) => [...prev, data.question]);
+    form.reset();
+  };
+  
+  const getPriorityBadgeVariant = (score: number) => {
+    if (score >= 8) return 'destructive';
+    if (score >= 5) return 'default';
+    return 'secondary';
+  }
+
+  return (
+    <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
+      <div>
+        <Card className="mb-8">
+          <CardHeader>
+            <CardTitle>Ask a Question</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Form {...form}>
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="space-y-4"
+              >
+                <FormField
+                  control={form.control}
+                  name="question"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel htmlFor="question-input">Your Question</FormLabel>
+                      <FormControl>
+                        <Textarea
+                          id="question-input"
+                          placeholder="Type your question here..."
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <Button type="submit">Submit Question</Button>
+              </form>
+            </Form>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Submitted Questions</CardTitle>
+            <CardDescription>
+              {questions.length > 0
+                ? 'Here are the questions from the audience.'
+                : 'No questions have been submitted yet.'}
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            {questions.length > 0 && (
+              <ul className="space-y-3">
+                {questions.map((q, i) => (
+                  <li
+                    key={i}
+                    className="rounded-md border bg-secondary/50 p-3 text-sm"
+                  >
+                    {q}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </CardContent>
+        </Card>
+      </div>
+
+      <div>
+        <Card>
+          <CardHeader>
+            <div className="flex flex-wrap items-center justify-between gap-4">
+              <div>
+                <CardTitle>AI Prioritized Questions</CardTitle>
+                <CardDescription>
+                  AI-sorted questions based on relevance and urgency.
+                </CardDescription>
+              </div>
+              <form
+                action={() =>
+                  formAction({ questions, presentationTopic })
+                }
+              >
+                <PrioritizeButton />
+              </form>
+            </div>
+          </CardHeader>
+          <CardContent>
+            {state?.error && (
+              <Alert variant="destructive">
+                <AlertCircle className="h-4 w-4" />
+                <AlertTitle>Error</AlertTitle>
+                <AlertDescription>{state.error}</AlertDescription>
+              </Alert>
+            )}
+            {state?.prioritizedQuestions && (
+              <Accordion type="single" collapsible className="w-full">
+                {state.prioritizedQuestions.map((item, index) => (
+                  <AccordionItem value={`item-${index}`} key={index}>
+                    <AccordionTrigger className="text-left hover:no-underline">
+                      <div className="flex items-start gap-4">
+                         <Badge variant={getPriorityBadgeVariant(item.priorityScore)} className="mt-1">
+                            {item.priorityScore}
+                         </Badge>
+                        <span>{item.question}</span>
+                      </div>
+                    </AccordionTrigger>
+                    <AccordionContent className="pl-12 text-muted-foreground">
+                      <strong>Reason:</strong> {item.reason}
+                    </AccordionContent>
+                  </AccordionItem>
+                ))}
+              </Accordion>
+            )}
+             {!state?.prioritizedQuestions && !state?.error && (
+                <div className="flex flex-col items-center justify-center rounded-md border border-dashed p-8 text-center">
+                    <Sparkles className="mx-auto h-12 w-12 text-muted-foreground" />
+                    <h3 className="mt-4 text-lg font-semibold">Prioritize Questions</h3>
+                    <p className="mt-1 text-sm text-muted-foreground">
+                        Click the "Prioritize with AI" button to sort submitted questions.
+                    </p>
+                </div>
+            )}
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  );
+}
