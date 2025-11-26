@@ -6,10 +6,6 @@
       "type": "object",
       "description": "Represents an attendee participating in the seminar.",
       "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique identifier for the Attendee entity."
-        },
         "name": {
           "type": "string",
           "description": "The full name of the attendee."
@@ -18,92 +14,55 @@
           "type": "string",
           "description": "The attendee's affiliation (e.g., company, university)."
         },
-        "contactDetails": {
+        "creatorId": {
           "type": "string",
-          "description": "Contact information for the attendee (e.g., email, phone number)."
+          "description": "The Firebase UID of the user who created the entry."
         }
       },
       "required": [
-        "id",
         "name",
         "affiliation",
-        "contactDetails"
+        "creatorId"
+      ]
+    },
+    "Question": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Question",
+      "type": "object",
+      "description": "A question submitted by an attendee.",
+      "properties": {
+        "text": {
+          "type": "string",
+          "description": "The content of the question."
+        },
+        "creatorId": {
+          "type": "string",
+          "description": "The Firebase UID of the user who submitted the question."
+        }
+      },
+      "required": [
+        "text",
+        "creatorId"
       ]
     }
   },
   "auth": {
     "providers": [
-      "password",
       "anonymous"
     ]
   },
   "firestore": {
-    "structure": [
-      {
-        "path": "/attendees/{attendeeId}",
-        "definition": {
-          "entityName": "Attendee",
-          "schema": {
-            "$ref": "#/backend/entities/Attendee"
-          },
-          "description": "Stores attendee information, including name, affiliation, and contact details. Each attendee document is uniquely identified by attendeeId.",
-          "params": [
-            {
-              "name": "attendeeId",
-              "description": "Unique identifier for the attendee document."
-            }
-          ]
-        }
+    "/attendees/{attendeeId}": {
+      "schema": {
+        "$ref": "#/entities/Attendee"
       },
-      {
-        "path": "/presentation_orders/{presentationId}",
-        "definition": {
-          "entityName": "PresentationOrder",
-          "schema": {
-            "$ref": "#/backend/entities/PresentationOrder"
-          },
-          "description": "Stores the presentation order, presenter names, and presentation titles. Includes denormalized data for authorization independence.",
-          "params": [
-            {
-              "name": "presentationId",
-              "description": "Unique identifier for the presentation order document."
-            }
-          ]
-        }
+      "description": "Stores information about each seminar attendee."
+    },
+    "/questions/{questionId}": {
+      "schema": {
+        "$ref": "#/entities/Question"
       },
-      {
-        "path": "/presentation_materials/{materialId}",
-        "definition": {
-          "entityName": "PresentationMaterial",
-          "schema": {
-            "$ref": "#/backend/entities/PresentationMaterial"
-          },
-          "description": "Stores links to downloadable presentation slides and supporting materials. Includes metadata for access control.",
-          "params": [
-            {
-              "name": "materialId",
-              "description": "Unique identifier for the presentation material document."
-            }
-          ]
-        }
-      },
-      {
-        "path": "/questions/{questionId}",
-        "definition": {
-          "entityName": "Question",
-          "schema": {
-            "$ref": "#/backend/entities/Question"
-          },
-          "description": "Stores questions submitted by attendees during presentations. Supports real-time submission and AI-powered prioritization. Each question document includes the userId of the submitter to allow for user-based filtering and reporting.",
-          "params": [
-            {
-              "name": "questionId",
-              "description": "Unique identifier for the question document."
-            }
-          ]
-        }
-      }
-    ],
-    "reasoning": "This Firestore structure is designed to support the SeminarSync application, focusing on attendee information, presentation details, real-time question submission, and AI-powered question prioritization. The structure prioritizes Authorization Independence, clarity, and scalability.  The primary goal is to eliminate the need for `get()` calls in Firestore rules, enabling atomic operations and simplifying security logic. This is achieved through denormalization and structural segregation.  Attendee data is stored in its own collection, segregated from other data to simplify access controls.  QAPs (Rules are not Filters) are supported by limiting list operations to authenticated users and through explicit ownership models."
+      "description": "Stores questions submitted by attendees."
+    }
   }
 }

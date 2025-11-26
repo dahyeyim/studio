@@ -8,7 +8,13 @@ import {
   SidebarContent,
   SidebarFooter,
 } from '@/components/ui/sidebar';
-import { ClipboardList, Users, HelpCircle, BotMessageSquare } from 'lucide-react';
+import {
+  ClipboardList,
+  Users,
+  HelpCircle,
+  BotMessageSquare,
+  Home,
+} from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 
@@ -16,6 +22,11 @@ export function AppSidebar() {
   const pathname = usePathname();
 
   const menuItems = [
+    {
+      href: '/',
+      label: 'Home',
+      icon: Home,
+    },
     {
       href: '/schedule',
       label: 'Schedule',
@@ -36,7 +47,7 @@ export function AppSidebar() {
   return (
     <>
       <SidebarHeader className="border-b border-sidebar-border p-4">
-        <Link href="/schedule" className="flex items-center gap-2">
+        <Link href="/" className="flex items-center gap-2">
           <BotMessageSquare className="h-8 w-8 text-sidebar-primary" />
           <h2 className="text-xl font-semibold text-sidebar-foreground">
             The 2nd Korea-Mongolia Urban Forum

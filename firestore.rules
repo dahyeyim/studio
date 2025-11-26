@@ -6,8 +6,8 @@
  * decisions for a document are made using data on that document itself, avoiding
  * slow and costly `get()` calls to other documents. All access is restricted to
  * authenticated users, which includes users signed in anonymously. User-generated
- * content, like questions, follows a strict ownership model where only the creator
- * can modify or delete their own content.
+ * content, like questions and attendee registrations, follows a strict ownership
+ * model where only the creator can add their own content.
  *
  * Data Structure:
  * The data is organized into several flat, top-level collections:
@@ -20,28 +20,24 @@
  * - Authenticated Access Only: All read and write operations across the database
  *   require the user to be authenticated, even if anonymously. This prevents
  *   unauthenticated data scraping or submission.
- * - Public Read, Restricted Writes: Collections like `/questions` are readable by all
- *   authenticated users to foster an open environment, but writes are strictly
- *   limited to the document's owner.
+ * - Public Read, Owner-Only Create: Collections like `/attendees` and `/questions`
+ *   are readable by all authenticated users, but writes are strictly limited to the
+ *   document's owner to prevent data tampering.
  * - Read-Only Reference Data: Collections like `/presentation_orders` and
  *   `/presentation_materials` are treated as read-only for clients, assuming they
  *   are managed by a trusted backend process or administrator.
- * - Attendee Write Limitation: The `/attendees` collection currently lacks an
- *   ownership field (e.g., `creatorId`). To prevent any user from modifying or
- *   deleting another user's entry, all write operations are currently disabled
- *   as a security precaution until the data model is updated.
  *
  * Denormalization for Authorization:
  * To enable fast and secure rules, an ownership model is enforced on user-generated
- * content. For example, each document in the `/questions` collection is expected to have a
- * `creatorId` field containing the UID of the user who submitted it. This allows rules
- * to grant update/delete permissions by simply checking this field against the
+ * content. For example, each document in `/attendees` and `/questions` is expected
+ * to have a `creatorId` field containing the UID of the user who submitted it. This
+ * allows rules to grant permissions by simply checking this field against the
  * requestor's UID, without needing to read any other documents.
  *
  * Structural Segregation:
- * The use of separate top-level collections for different data types (attendees,
- * questions, etc.) provides a clear and secure separation of concerns. This makes
- * it simple to apply different security postures to each data type.
+ * The use of separate top-level collections for different data types provides a
+ * clear and secure separation of concerns, making it simple to apply different
+ * security postures to each data type.
  */
 rules_version = '2';
 service cloud.firestore {
@@ -87,15 +83,15 @@ service cloud.firestore {
     /**
      * @description Manages the list of seminar attendees.
      * @path /attendees/{attendeeId}
-     * @allow (get) An authenticated user reads an attendee's details.
-     * @deny (create) Any user attempts to add a new attendee, as writes are disabled.
-     * @principle Prevents unauthorized data modification by disabling writes until a secure ownership model can be implemented.
+     * @allow (get, list) Any authenticated user can read the list of attendees.
+     * @allow (create) An authenticated user can add a new attendee document if they are the creator.
+     * @deny (update, delete) No user can modify or delete attendee information after creation.
+     * @principle Enforces an ownership model for creating data, while making the list publicly readable to other authenticated users.
      */
     match /attendees/{attendeeId} {
       allow get, list: if isSignedIn();
-      // CRITICAL: Cannot implement secure owner-only writes. The 'Attendee' entity is missing an 'ownerId' or 'creatorId' field.
-      // Writing is disabled to prevent any user from modifying or deleting another's data.
-      allow create, update, delete: if false; // TODO: Add owner validation once the schema is updated with an ownership field.
+      allow create: if isSignedIn() && request.resource.data.creatorId == request.auth.uid;
+      allow update, delete: if false;
     }
 
     /**

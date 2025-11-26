@@ -16,50 +16,7 @@ export interface Presentation {
   downloadUrl: string | null;
 }
 
-export const attendees: Attendee[] = [
-  {
-    id: '1',
-    name: '김민준',
-    affiliation: '넥스트젠 이노베이션',
-    email: 'mj.kim@nextgen.com',
-    phone: '010-1111-2222',
-  },
-  {
-    id: '2',
-    name: '이서연',
-    affiliation: '크리에이티브 솔루션',
-    email: 'sy.lee@creativesol.com',
-    phone: '010-2222-3333',
-  },
-  {
-    id: '3',
-    name: '박지훈',
-    affiliation: '퓨처테크',
-    email: 'jh.park@future-tech.net',
-    phone: '010-3333-4444',
-  },
-  {
-    id: '4',
-    name: '최수아',
-    affiliation: '데이터 인사이트',
-    email: 'sa.choi@datainsight.io',
-    phone: '010-4444-5555',
-  },
-  {
-    id: '5',
-    name: '정현우',
-    affiliation: '넥스트젠 이노베이션',
-    email: 'hw.jung@nextgen.com',
-    phone: '010-5555-6666',
-  },
-  {
-    id: '6',
-    name: '윤지아',
-    affiliation: '서울기술대학교',
-    email: 'ja.yoon@stech.ac.kr',
-    phone: '010-6666-7777',
-  },
-];
+export const attendees: Attendee[] = [];
 
 export const presentationSchedule: Presentation[] = [
   {
@@ -99,7 +56,7 @@ export const presentationSchedule: Presentation[] = [
     title: 'Coffee break',
     presenter: 'All Attendees',
     time: '10:50 - 11:20',
-    description: 'Coffee break.',
+    description: '',
     downloadUrl: null,
   },
   {
