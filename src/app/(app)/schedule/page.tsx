@@ -1,7 +1,8 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { presentationSchedule } from '@/lib/data';
-import { Clock, Download, User } from 'lucide-react';
+import { Clock, Download, User, HelpCircle } from 'lucide-react';
+import Link from 'next/link';
 
 export default function SchedulePage() {
   return (
@@ -33,13 +34,21 @@ export default function SchedulePage() {
             <CardContent className="p-6 text-sm text-foreground/80">
               <p>{item.description}</p>
             </CardContent>
-            <CardFooter className="bg-card-foreground/5">
+            <CardFooter className="flex flex-wrap gap-2 bg-card-foreground/5">
               <Button variant="outline" asChild>
                 <a href={item.downloadUrl} download>
                   <Download className="mr-2 h-4 w-4" />
                   Download Materials
                 </a>
               </Button>
+              {item.title.toUpperCase().includes('SESSION') && (
+                <Button asChild>
+                  <Link href="/questions">
+                    <HelpCircle className="mr-2 h-4 w-4" />
+                    Go to Q&A
+                  </Link>
+                </Button>
+              )}
             </CardFooter>
           </Card>
         ))}
