@@ -1,12 +1,3 @@
-
-export interface Attendee {
-  id: string;
-  name: string;
-  affiliation: string;
-  email: string;
-  phone: string;
-}
-
 export interface Presentation {
   id: string;
   title: string;
@@ -14,9 +5,8 @@ export interface Presentation {
   time: string;
   description: string;
   downloadUrl: string | null;
+  isSession: boolean;
 }
-
-export const attendees: Attendee[] = [];
 
 export const presentationSchedule: Presentation[] = [
   {
@@ -24,24 +14,27 @@ export const presentationSchedule: Presentation[] = [
     title: 'Registration (Coffee break)',
     presenter: 'All Attendees',
     time: '08:30 - 08:50',
-    description: 'Attendee registration and coffee break.',
+    description: '',
     downloadUrl: null,
+    isSession: false,
   },
   {
     id: 'p2',
     title: 'Opening Remarks',
     presenter: 'Executive Director of NIRD / KOICA Resident Representative',
     time: '09:00 - 09:15',
-    description: 'Opening remarks for the forum.',
+    description: '',
     downloadUrl: null,
+    isSession: false,
   },
   {
     id: 'p3',
     title: 'Group Photo',
     presenter: 'All Attendees',
     time: '09:15 - 09:20',
-    description: 'Group photo session.',
+    description: '',
     downloadUrl: null,
+    isSession: false,
   },
   {
     id: 'p4',
@@ -50,6 +43,7 @@ export const presentationSchedule: Presentation[] = [
     time: '09:20 - 10:50',
     description: 'Presentations (20 min), Discussion (50 min), Q&A (20 min)',
     downloadUrl: '/downloads/session1.pdf',
+    isSession: true,
   },
   {
     id: 'p5',
@@ -58,6 +52,7 @@ export const presentationSchedule: Presentation[] = [
     time: '10:50 - 11:20',
     description: '',
     downloadUrl: null,
+    isSession: false,
   },
   {
     id: 'p6',
@@ -66,14 +61,16 @@ export const presentationSchedule: Presentation[] = [
     time: '11:20 - 12:40',
     description: 'Presentation (10 min), Discussion (50 min), Q&A (20 min)',
     downloadUrl: '/downloads/session2.pdf',
+    isSession: true,
   },
   {
     id: 'p7',
     title: 'Lunch',
     presenter: 'All Attendees',
     time: '12:50 - 14:20',
-    description: 'Lunch break.',
+    description: '',
     downloadUrl: null,
+    isSession: false,
   },
   {
     id: 'p8',
@@ -82,22 +79,25 @@ export const presentationSchedule: Presentation[] = [
     time: '14:20 - 15:50',
     description: 'Presentations (20 min), Discussion (50 min), Q&A (20 min)',
     downloadUrl: '/downloads/session3.pdf',
+    isSession: true,
   },
   {
     id: 'p9',
     title: 'Presentation on the Master Plan of Khunnu City',
     presenter: 'Young Researchers',
     time: '15:50 - 16:10',
-    description: 'Presentation by young researchers on the Khunnu City master plan.',
+    description: '',
     downloadUrl: '/downloads/khunnu-master-plan.pdf',
+    isSession: false,
   },
   {
     id: 'p10',
     title: 'Break',
     presenter: 'All Attendees',
     time: '16:10 - 16:40',
-    description: 'A short break.',
+    description: '',
     downloadUrl: null,
+    isSession: false,
   },
   {
     id: 'p11',
@@ -107,13 +107,15 @@ export const presentationSchedule: Presentation[] = [
     time: '16:40 - 17:20',
     description: 'Discussion (20 min), Q&A (20 min)',
     downloadUrl: '/downloads/conclusion.pdf',
+    isSession: true,
   },
   {
     id: 'p12',
     title: 'Closing Session',
     presenter: 'All Attendees',
     time: '17:20 - 17:30',
-    description: 'Closing session of the forum.',
+    description: '',
     downloadUrl: null,
+    isSession: false,
   },
 ];

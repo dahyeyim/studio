@@ -95,41 +95,19 @@ service cloud.firestore {
     }
 
     /**
-     * @description Manages the presentation schedule, treated as read-only reference data.
-     * @path /presentation_orders/{presentationId}
-     * @allow (get) An authenticated user reads the presentation schedule.
-     * @deny (create, update, delete) Any user attempts to modify the schedule.
-     * @principle Protects critical reference data by making it read-only from the client side.
-     */
-    match /presentation_orders/{presentationId} {
-      allow get, list: if isSignedIn();
-      allow create, update, delete: if false;
-    }
-
-    /**
-     * @description Manages presentation materials, treated as read-only reference data.
-     * @path /presentation_materials/{materialId}
-     * @allow (get) An authenticated user reads a link to a presentation file.
-     * @deny (create, update, delete) Any user attempts to modify the presentation materials.
-     * @principle Protects critical reference data by making it read-only from the client side.
-     */
-    match /presentation_materials/{materialId} {
-      allow get, list: if isSignedIn();
-      allow create, update, delete: if false;
-    }
-
-    /**
      * @description Manages questions submitted by attendees during the seminar.
      * @path /questions/{questionId}
-     * @allow (create) An authenticated user `(uid: 'user123')` creates a question with `{ creatorId: 'user123' }`.
-     * @deny (update) A user `(uid: 'user456')` tries to update a question created by `'user123'`.
-     * @principle Enforces document ownership for writes. Any authenticated user can read all questions and create new ones, but only the original author can modify or delete their own question.
+     * @allow (get, list) Any authenticated user can read the list of questions.
+     * @allow (create) An authenticated user can create a question if they are the owner and provide a valid sessionId.
+     * @allow (update, delete) The owner of the question can modify or delete it.
+     * @principle Enforces document ownership for writes and ensures data integrity.
      */
     match /questions/{questionId} {
       allow get, list: if isSignedIn();
-      allow create: if isSignedIn() && request.resource.data.creatorId == request.auth.uid;
-      allow update: if isExistingOwner(resource.data.creatorId) && isCreatorIdUnchanged();
-      allow delete: if isExistingOwner(resource.data.creatorId);
+      allow create: if isOwner(request.resource.data.creatorId) 
+                      && request.resource.data.sessionId is string
+                      && request.resource.data.sessionId.size() > 0;
+      allow update, delete: if isExistingOwner(resource.data.creatorId);
     }
   }
 }

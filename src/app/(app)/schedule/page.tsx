@@ -1,5 +1,13 @@
+'use client';
+
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 import { presentationSchedule } from '@/lib/data';
 import { Clock, Download, User, HelpCircle } from 'lucide-react';
 import Link from 'next/link';
@@ -19,7 +27,9 @@ export default function SchedulePage() {
         {presentationSchedule.map((item) => (
           <Card key={item.id} className="overflow-hidden">
             <CardHeader className="bg-card-foreground/5">
-              <CardTitle className="font-headline text-xl">{item.title}</CardTitle>
+              <CardTitle className="font-headline text-xl">
+                {item.title}
+              </CardTitle>
               <div className="flex flex-wrap items-center gap-x-4 gap-y-1 pt-2 text-sm text-muted-foreground">
                 <div className="flex items-center gap-2">
                   <User className="h-4 w-4" />
@@ -43,11 +53,13 @@ export default function SchedulePage() {
                   </a>
                 </Button>
               )}
-              {item.title.toUpperCase().includes('SESSION') && (
+              {item.isSession && (
                 <Button asChild>
-                  <Link href="/questions">
+                  <Link
+                    href={`/questions?sessionId=${item.id}&topic=${encodeURIComponent(item.title)}`}
+                  >
                     <HelpCircle className="mr-2 h-4 w-4" />
-                    Go to Q&A
+                    Go to Q&amp;A
                   </Link>
                 </Button>
               )}

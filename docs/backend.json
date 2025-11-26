@@ -54,11 +54,16 @@
         "creatorId": {
           "type": "string",
           "description": "The Firebase UID of the user who submitted the question."
+        },
+        "sessionId": {
+          "type": "string",
+          "description": "The ID of the presentation session this question belongs to."
         }
       },
       "required": [
         "text",
-        "creatorId"
+        "creatorId",
+        "sessionId"
       ]
     }
   },

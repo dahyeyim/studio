@@ -1,7 +1,16 @@
-import { QuestionInterface } from '@/components/question-interface';
+'use client';
 
-export default function QuestionsPage() {
-  const presentationTopic = 'The Future of Artificial Intelligence in Business';
+import { Suspense } from 'react';
+import { QuestionInterface } from '@/components/question-interface';
+import { useSearchParams } from 'next/navigation';
+import { Loader2 } from 'lucide-react';
+
+function QuestionPageContent() {
+  const searchParams = useSearchParams();
+  const sessionId = searchParams.get('sessionId');
+  const topic = searchParams.get('topic');
+
+  const presentationTopic = topic || 'General Q&A';
 
   return (
     <div className="flex flex-1 flex-col p-4 md:p-6">
@@ -14,8 +23,25 @@ export default function QuestionsPage() {
         </p>
       </header>
       <main>
-        <QuestionInterface presentationTopic={presentationTopic} />
+        <QuestionInterface
+          presentationTopic={presentationTopic}
+          sessionId={sessionId}
+        />
       </main>
     </div>
+  );
+}
+
+export default function QuestionsPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex h-full w-full items-center justify-center p-6">
+          <Loader2 className="h-8 w-8 animate-spin" />
+        </div>
+      }
+    >
+      <QuestionPageContent />
+    </Suspense>
   );
 }
