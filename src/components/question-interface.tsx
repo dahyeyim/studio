@@ -43,6 +43,7 @@ import { Alert, AlertDescription, AlertTitle } from './ui/alert';
 import { useCollection, useFirebase, useMemoFirebase } from '@/firebase';
 import { addDocumentNonBlocking } from '@/firebase/non-blocking-updates';
 import { useToast } from '@/hooks/use-toast';
+import { presentationSchedule } from '@/lib/data';
 
 const formSchema = z.object({
   question: z
@@ -90,7 +91,6 @@ export function QuestionInterface({
 }: QuestionInterfaceProps) {
   const { firestore, user } = useFirebase();
   const { toast } = useToast();
-  const [localQuestions, setLocalQuestions] = useState<string[]>([]);
 
   const questionsQuery = useMemoFirebase(
     () => (firestore ? query(collection(firestore, 'questions')) : null),
@@ -138,7 +138,6 @@ export function QuestionInterface({
     };
 
     addDocumentNonBlocking(collection(firestore, 'questions'), questionData);
-    setLocalQuestions((prev) => [...prev, data.question]);
     form.reset();
     toast({
       title: 'Question Submitted',
@@ -153,73 +152,71 @@ export function QuestionInterface({
   };
 
   const questionsForAI = useMemo(() => {
-    const combined = new Set([
-      ...localQuestions,
-      ...(allQuestions?.map((q) => q.text) || []),
-    ]);
-    return Array.from(combined);
-  }, [localQuestions, allQuestions]);
+    return allQuestions?.map((q) => q.text) || [];
+  }, [allQuestions]);
+
+  const getSessionTopic = (sessionId: string) => {
+    const session = presentationSchedule.find((s) => s.id === sessionId);
+    return session ? session.title : 'Unknown Session';
+  };
 
   return (
     <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
       <div>
-        <Card className="mb-8">
-          <CardHeader>
-            <CardTitle>Ask a Question</CardTitle>
-            <CardDescription>For: {presentationTopic}</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Form {...form}>
-              <form
-                onSubmit={form.handleSubmit(onSubmit)}
-                className="space-y-4"
-              >
-                <FormField
-                  control={form.control}
-                  name="question"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel htmlFor="question-input">
-                        Your Question
-                      </FormLabel>
-                      <FormControl>
-                        <Textarea
-                          id="question-input"
-                          placeholder="Type your question here..."
-                          {...field}
-                          disabled={!sessionId || isSubmitting}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <Button
-                  type="submit"
-                  disabled={!sessionId || isSubmitting}
+        {sessionId && (
+          <Card className="mb-8">
+            <CardHeader>
+              <CardTitle>Ask a Question</CardTitle>
+              <CardDescription>For: {presentationTopic}</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Form {...form}>
+                <form
+                  onSubmit={form.handleSubmit(onSubmit)}
+                  className="space-y-4"
                 >
-                  {isSubmitting ? (
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  ) : (
-                    <MessageSquarePlus className="mr-2 h-4 w-4" />
-                  )}
-                  Submit Question
-                </Button>
-                {!sessionId && (
-                  <p className="text-sm text-destructive">
-                    Please select a session from the schedule to ask a question.
-                  </p>
-                )}
-              </form>
-            </Form>
-          </CardContent>
-        </Card>
+                  <FormField
+                    control={form.control}
+                    name="question"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel htmlFor="question-input">
+                          Your Question
+                        </FormLabel>
+                        <FormControl>
+                          <Textarea
+                            id="question-input"
+                            placeholder="Type your question here..."
+                            {...field}
+                            disabled={!sessionId || isSubmitting}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <Button
+                    type="submit"
+                    disabled={!sessionId || isSubmitting}
+                  >
+                    {isSubmitting ? (
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    ) : (
+                      <MessageSquarePlus className="mr-2 h-4 w-4" />
+                    )}
+                    Submit Question
+                  </Button>
+                </form>
+              </Form>
+            </CardContent>
+          </Card>
+        )}
 
         <Card>
           <CardHeader>
             <CardTitle>Submitted Questions</CardTitle>
             <CardDescription>
-              {questionsForAI.length > 0
+              {allQuestions && allQuestions.length > 0
                 ? 'Here are the questions from the audience.'
                 : 'No questions have been submitted yet.'}
             </CardDescription>
@@ -229,14 +226,17 @@ export function QuestionInterface({
               <div className="flex justify-center">
                 <Loader2 className="h-6 w-6 animate-spin" />
               </div>
-            ) : questionsForAI.length > 0 ? (
-              <ul className="space-y-3">
-                {questionsForAI.map((q, i) => (
+            ) : allQuestions && allQuestions.length > 0 ? (
+              <ul className="space-y-4">
+                {allQuestions.map((q) => (
                   <li
-                    key={i}
-                    className="rounded-md border bg-secondary/50 p-3 text-sm"
+                    key={q.id}
+                    className="rounded-md border bg-secondary/50 p-3"
                   >
-                    {q}
+                    <p className="text-sm">{q.text}</p>
+                    <p className="mt-2 text-xs text-muted-foreground">
+                      For: {getSessionTopic(q.sessionId)}
+                    </p>
                   </li>
                 ))}
               </ul>
