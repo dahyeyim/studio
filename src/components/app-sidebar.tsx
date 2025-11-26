@@ -13,7 +13,6 @@ import {
   ClipboardList,
   Users,
   HelpCircle,
-  BotMessageSquare,
   Home,
   Mic,
 } from 'lucide-react';
@@ -88,7 +87,6 @@ export function AppSidebar() {
     <>
       <SidebarHeader className="border-b border-sidebar-border p-4">
         <Link href="/schedule" className="flex items-center gap-2">
-          <BotMessageSquare className="h-8 w-8 text-sidebar-primary" />
           <h2 className="text-xl font-semibold text-sidebar-foreground">
             The 2nd Korea-Mongolia Urban Forum
           </h2>

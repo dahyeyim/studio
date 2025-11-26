@@ -6,7 +6,6 @@ import {
   SidebarTrigger,
 } from '@/components/ui/sidebar';
 import type { ReactNode } from 'react';
-import { BotMessageSquare } from 'lucide-react';
 import Link from 'next/link';
 import { FirebaseClientProvider } from '@/firebase';
 
@@ -23,7 +22,6 @@ export default function AppLayout({ children }: { children: ReactNode }) {
               href="/schedule"
               className="flex items-center gap-2 font-semibold"
             >
-              <BotMessageSquare className="h-6 w-6" />
               <span>The 2nd Korea-Mongolia Urban Forum</span>
             </Link>
             <div className="ml-auto">
