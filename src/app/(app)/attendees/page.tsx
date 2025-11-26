@@ -45,21 +45,21 @@ export default function AttendeesPage() {
     <div className="flex flex-1 flex-col p-4 md:p-6">
       <header className="mb-6">
         <h1 className="font-headline text-3xl font-semibold tracking-tight">
-          참석자 명단
+          Attendees List
         </h1>
         <p className="text-muted-foreground">
-          SeminarSync에 등록된 참석자 목록입니다.
+          This is the list of attendees registered in SeminarSync.
         </p>
       </header>
 
       <Card>
         <CardHeader>
-          <CardTitle>참석자</CardTitle>
+          <CardTitle>Attendees</CardTitle>
           <div className="relative mt-2">
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input
               type="search"
-              placeholder="이름으로 검색..."
+              placeholder="Search by name..."
               className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[320px]"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
@@ -71,11 +71,11 @@ export default function AttendeesPage() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>이름</TableHead>
-                  <TableHead>소속 (기관)</TableHead>
-                  <TableHead>부서</TableHead>
-                  <TableHead>직책</TableHead>
-                  <TableHead>이메일</TableHead>
+                  <TableHead>Name</TableHead>
+                  <TableHead>Affiliation (Institution)</TableHead>
+                  <TableHead>Department</TableHead>
+                  <TableHead>Position</TableHead>
+                  <TableHead>Email</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -100,7 +100,7 @@ export default function AttendeesPage() {
                 ) : (
                   <TableRow>
                     <TableCell colSpan={5} className="h-24 text-center">
-                      참석자가 없습니다.
+                      No attendees found.
                     </TableCell>
                   </TableRow>
                 )}
