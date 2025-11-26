@@ -4,7 +4,7 @@ import { Toaster } from '@/components/ui/toaster';
 import { FirebaseClientProvider } from '@/firebase';
 
 export const metadata: Metadata = {
-  title: 'The 2nd Korea-Mongolia Urban Forum',
+  title: 'The 2nd Mongolia-Korea Urban Forum',
   description: 'An application for managing seminars seamlessly.',
 };
 

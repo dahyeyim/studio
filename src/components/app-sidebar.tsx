@@ -9,13 +9,7 @@ import {
   SidebarFooter,
   SidebarMenuSkeleton,
 } from '@/components/ui/sidebar';
-import {
-  ClipboardList,
-  Users,
-  HelpCircle,
-  Home,
-  Mic,
-} from 'lucide-react';
+import { ClipboardList, Users, HelpCircle, Home, Mic } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { useFirebase, useCollection, useMemoFirebase } from '@/firebase';
@@ -24,7 +18,7 @@ import { useMemo } from 'react';
 
 export function AppSidebar() {
   const pathname = usePathname();
-  const { user, firestore, isUserLoading } = useFirebase();
+  const { user, isUserLoading } = useFirebase();
 
   const attendeeQuery = useMemoFirebase(() => {
     if (!firestore || !user?.uid) return null;
@@ -42,7 +36,7 @@ export function AppSidebar() {
     () => (attendeeData ? attendeeData.length > 0 : false),
     [attendeeData]
   );
-  
+
   const isLoading = isUserLoading || isAttendeeLoading;
 
   const baseMenuItems = [
@@ -82,14 +76,18 @@ export function AppSidebar() {
     ];
   }, [isLoading, hasRegistered, baseMenuItems]);
 
+  const { firestore } = useFirebase();
 
   return (
     <>
       <SidebarHeader className="border-b border-sidebar-border p-4">
         <Link href="/schedule" className="flex items-center gap-2">
-          <h2 className="text-xl font-semibold text-sidebar-foreground">
-            The 2nd Korea-Mongolia Urban Forum
-          </h2>
+          <div className="flex flex-col">
+            <span className="text-sm font-medium">The 2nd</span>
+            <span className="font-semibold text-sidebar-foreground">
+              Mongolia-Korea Urban Forum
+            </span>
+          </div>
         </Link>
       </SidebarHeader>
       <SidebarContent className="p-4">
@@ -123,7 +121,7 @@ export function AppSidebar() {
         </SidebarMenu>
       </SidebarContent>
       <SidebarFooter className="p-4 text-xs text-sidebar-foreground/50">
-        &copy; {new Date().getFullYear()} The 2nd Korea-Mongolia Urban Forum
+        &copy; {new Date().getFullYear()} Mongolia-Korea Urban Forum
       </SidebarFooter>
     </>
   );

@@ -27,6 +27,7 @@ import { collection } from 'firebase/firestore';
 import { addDocumentNonBlocking } from '@/firebase';
 import { Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { Textarea } from '@/components/ui/textarea';
 
 const formSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters.'),
@@ -34,6 +35,7 @@ const formSchema = z.object({
   department: z.string().min(2, 'Department must be at least 2 characters.'),
   position: z.string().min(2, 'Position must be at least 2 characters.'),
   email: z.string().email('Please enter a valid email address.'),
+  biography: z.string().optional(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -52,6 +54,7 @@ export default function RegistrationPage() {
       department: '',
       position: '',
       email: '',
+      biography: '',
     },
   });
 
@@ -61,7 +64,8 @@ export default function RegistrationPage() {
       toast({
         variant: 'destructive',
         title: 'Error',
-        description: 'Registration service is not available. Please try again later.',
+        description:
+          'Registration service is not available. Please try again later.',
       });
       return;
     }
@@ -72,10 +76,11 @@ export default function RegistrationPage() {
         ...data,
         creatorId: user.uid,
       });
-      
+
       toast({
         title: 'Registration Successful',
-        description: 'Thank you for registering. You will be redirected shortly.',
+        description:
+          'Thank you for registering. You will be redirected shortly.',
       });
 
       router.push('/attendees');
@@ -92,9 +97,13 @@ export default function RegistrationPage() {
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-background p-4">
-      <Card className="w-full max-w-md">
+      <Card className="w-full max-w-lg">
         <CardHeader>
-          <CardTitle>The 2nd Korea-Mongolia Urban Forum</CardTitle>
+          <CardTitle className="text-2xl">
+            <span className="text-base font-medium">The 2nd</span>
+            <br />
+            Mongolia-Korea Urban Forum
+          </CardTitle>
           <CardDescription>
             Please enter your information to register.
           </CardDescription>
@@ -102,19 +111,37 @@ export default function RegistrationPage() {
         <CardContent>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Name</FormLabel>
-                    <FormControl>
-                      <Input placeholder="e.g. John Doe" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <FormField
+                  control={form.control}
+                  name="name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="e.g. John Doe" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Email</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="e.g. john.doe@example.com"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
               <FormField
                 control={form.control}
                 name="affiliation"
@@ -131,47 +158,44 @@ export default function RegistrationPage() {
                   </FormItem>
                 )}
               />
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <FormField
+                  control={form.control}
+                  name="department"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Department</FormLabel>
+                      <FormControl>
+                        <Input placeholder="e.g. Urban Planning" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="position"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Position</FormLabel>
+                      <FormControl>
+                        <Input placeholder="e.g. Researcher" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
               <FormField
                 control={form.control}
-                name="department"
+                name="biography"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Department</FormLabel>
+                    <FormLabel>Biography</FormLabel>
                     <FormControl>
-                      <Input
-                        placeholder="e.g. Urban Planning"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-               <FormField
-                control={form.control}
-                name="position"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Position</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="e.g. Researcher"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-               <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Email</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="e.g. john.doe@example.com"
+                      <Textarea
+                        placeholder="Tell us a little bit about yourself."
+                        className="resize-none"
                         {...field}
                       />
                     </FormControl>
@@ -180,7 +204,9 @@ export default function RegistrationPage() {
                 )}
               />
               <Button type="submit" className="w-full" disabled={isSubmitting}>
-                {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                {isSubmitting && (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                )}
                 Register
               </Button>
             </form>
