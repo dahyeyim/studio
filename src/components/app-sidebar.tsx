@@ -39,7 +39,7 @@ export function AppSidebar() {
         <Link href="/schedule" className="flex items-center gap-2">
           <BotMessageSquare className="h-8 w-8 text-sidebar-primary" />
           <h2 className="text-xl font-semibold text-sidebar-foreground">
-            SeminarSync
+            The 2nd Korea-Mongolia Urban Forum
           </h2>
         </Link>
       </SidebarHeader>
@@ -62,7 +62,7 @@ export function AppSidebar() {
         </SidebarMenu>
       </SidebarContent>
       <SidebarFooter className="p-4 text-xs text-sidebar-foreground/50">
-        &copy; {new Date().getFullYear()} SeminarSync
+        &copy; {new Date().getFullYear()} The 2nd Korea-Mongolia Urban Forum
       </SidebarFooter>
     </>
   );

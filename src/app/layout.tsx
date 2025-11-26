@@ -3,7 +3,7 @@ import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
 
 export const metadata: Metadata = {
-  title: 'SeminarSync',
+  title: 'The 2nd Korea-Mongolia Urban Forum',
   description: 'An application for managing seminars seamlessly.',
 };
 
