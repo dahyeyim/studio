@@ -1,3 +1,4 @@
+
 export interface Attendee {
   id: string;
   name: string;
@@ -66,7 +67,7 @@ export const presentationSchedule: Presentation[] = [
     title: 'Registration (Coffee break)',
     presenter: 'All Attendees',
     time: '08:30 - 08:50',
-    description: '참석자 등록 및 커피 브레이크',
+    description: 'Attendee registration and coffee break.',
     downloadUrl: null,
   },
   {
@@ -74,7 +75,7 @@ export const presentationSchedule: Presentation[] = [
     title: 'Opening Remarks',
     presenter: 'Executive Director of NIRD / KOICA Resident Representative',
     time: '09:00 - 09:15',
-    description: '개회사',
+    description: 'Opening remarks for the forum.',
     downloadUrl: null,
   },
   {
@@ -82,7 +83,7 @@ export const presentationSchedule: Presentation[] = [
     title: 'Group Photo',
     presenter: 'All Attendees',
     time: '09:15 - 09:20',
-    description: '단체 사진 촬영',
+    description: 'Group photo session.',
     downloadUrl: null,
   },
   {
@@ -98,7 +99,7 @@ export const presentationSchedule: Presentation[] = [
     title: 'Coffee break',
     presenter: 'All Attendees',
     time: '10:50 - 11:20',
-    description: '커피 브레이크',
+    description: 'Coffee break.',
     downloadUrl: null,
   },
   {
@@ -114,7 +115,7 @@ export const presentationSchedule: Presentation[] = [
     title: 'Lunch',
     presenter: 'All Attendees',
     time: '12:50 - 14:20',
-    description: '점심 식사',
+    description: 'Lunch break.',
     downloadUrl: null,
   },
   {
@@ -130,7 +131,7 @@ export const presentationSchedule: Presentation[] = [
     title: 'Presentation on the Master Plan of Khunnu City',
     presenter: 'Young Researchers',
     time: '15:50 - 16:10',
-    description: '젊은 연구자들의 Khunnu City 마스터 플랜 발표',
+    description: 'Presentation by young researchers on the Khunnu City master plan.',
     downloadUrl: '/downloads/khunnu-master-plan.pdf',
   },
   {
@@ -138,7 +139,7 @@ export const presentationSchedule: Presentation[] = [
     title: 'Break',
     presenter: 'All Attendees',
     time: '16:10 - 16:40',
-    description: '휴식 시간',
+    description: 'A short break.',
     downloadUrl: null,
   },
   {
@@ -155,7 +156,7 @@ export const presentationSchedule: Presentation[] = [
     title: 'Closing Session',
     presenter: 'All Attendees',
     time: '17:20 - 17:30',
-    description: '폐회',
+    description: 'Closing session of the forum.',
     downloadUrl: null,
   },
 ];
