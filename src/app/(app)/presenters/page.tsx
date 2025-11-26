@@ -1,0 +1,102 @@
+'use client';
+
+import { useState } from 'react';
+import Image from 'next/image';
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import { presenters, type Presenter } from '@/lib/data';
+
+export default function PresentersPage() {
+  const [selectedPresenter, setSelectedPresenter] = useState<Presenter | null>(
+    null
+  );
+
+  return (
+    <div className="flex flex-1 flex-col p-4 md:p-6">
+      <header className="mb-6">
+        <h1 className="font-headline text-3xl font-semibold tracking-tight">
+          Forum Presenters
+        </h1>
+        <p className="text-muted-foreground">
+          Meet the experts speaking at the forum.
+        </p>
+      </header>
+
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        {presenters.map((presenter) => (
+          <Card
+            key={presenter.id}
+            className="cursor-pointer overflow-hidden transition-all hover:shadow-lg hover:scale-105"
+            onClick={() => setSelectedPresenter(presenter)}
+          >
+            <CardHeader className="p-0">
+              <div className="relative aspect-[4/3] w-full">
+                <Image
+                  src={presenter.imageUrl}
+                  alt={`Portrait of ${presenter.name}`}
+                  fill
+                  className="object-cover"
+                  data-ai-hint={presenter.imageHint}
+                />
+              </div>
+            </CardHeader>
+            <CardContent className="p-4">
+              <h3 className="font-semibold">{presenter.name}</h3>
+              <p className="text-sm text-muted-foreground">
+                {presenter.affiliation}
+              </p>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      <Dialog
+        open={!!selectedPresenter}
+        onOpenChange={(isOpen) => !isOpen && setSelectedPresenter(null)}
+      >
+        <DialogContent className="sm:max-w-2xl">
+          {selectedPresenter && (
+            <>
+              <DialogHeader>
+                <DialogTitle className="text-2xl">
+                  {selectedPresenter.name}
+                </DialogTitle>
+                <p className="text-sm text-muted-foreground pt-1">
+                  {selectedPresenter.affiliation}
+                </p>
+              </DialogHeader>
+              <div className="grid gap-6 py-4 md:grid-cols-3">
+                <div className="relative col-span-1 aspect-square w-full self-start overflow-hidden rounded-md md:aspect-[3/4]">
+                  <Image
+                    src={selectedPresenter.imageUrl}
+                    alt={`Portrait of ${selectedPresenter.name}`}
+                    fill
+                    className="object-cover"
+                    data-ai-hint={selectedPresenter.imageHint}
+                  />
+                </div>
+                <div className="col-span-1 md:col-span-2">
+                  <h4 className="font-semibold mb-2">Biography</h4>
+                  <p className="text-sm text-foreground/80 whitespace-pre-line">
+                    {selectedPresenter.bio}
+                  </p>
+                </div>
+              </div>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
+}

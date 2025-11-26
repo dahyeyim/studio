@@ -14,6 +14,7 @@ import {
   HelpCircle,
   BotMessageSquare,
   Home,
+  Mic,
 } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
@@ -31,6 +32,11 @@ export function AppSidebar() {
       href: '/schedule',
       label: 'Schedule',
       icon: ClipboardList,
+    },
+    {
+      href: '/presenters',
+      label: 'Presenters',
+      icon: Mic,
     },
     {
       href: '/attendees',
@@ -60,7 +66,7 @@ export function AppSidebar() {
             <SidebarMenuItem key={item.href}>
               <SidebarMenuButton
                 asChild
-                isActive={pathname === item.href}
+                isActive={pathname.startsWith(item.href) && (item.href !== '/' || pathname === '/')}
                 tooltip={item.label}
               >
                 <Link href={item.href}>
