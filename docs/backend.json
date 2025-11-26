@@ -58,12 +58,22 @@
         "sessionId": {
           "type": "string",
           "description": "The ID of the presentation session this question belongs to."
+        },
+        "attendeeName": {
+          "type": "string",
+          "description": "The name of the attendee who submitted the question."
+        },
+        "attendeeAffiliation": {
+          "type": "string",
+          "description": "The affiliation of the attendee who submitted the question."
         }
       },
       "required": [
         "text",
         "creatorId",
-        "sessionId"
+        "sessionId",
+        "attendeeName",
+        "attendeeAffiliation"
       ]
     }
   },

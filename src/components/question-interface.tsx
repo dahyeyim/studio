@@ -1,11 +1,11 @@
 'use client';
 
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import { useForm, type SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useFormState, useFormStatus } from 'react-dom';
-import { collection, query } from 'firebase/firestore';
+import { collection, query, where, getDocs } from 'firebase/firestore';
 
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -58,6 +58,15 @@ interface Question {
   id: string;
   text: string;
   sessionId: string;
+  creatorId: string;
+  attendeeName: string;
+  attendeeAffiliation: string;
+}
+
+interface Attendee {
+  id: string;
+  name: string;
+  affiliation: string;
   creatorId: string;
 }
 
@@ -131,18 +140,44 @@ export function QuestionInterface({
       return;
     }
 
-    const questionData = {
-      text: data.question,
-      creatorId: user.uid,
-      sessionId: sessionId,
-    };
+    try {
+      const attendeesQuery = query(
+        collection(firestore, 'attendees'),
+        where('creatorId', '==', user.uid)
+      );
+      const attendeeSnapshot = await getDocs(attendeesQuery);
 
-    addDocumentNonBlocking(collection(firestore, 'questions'), questionData);
-    form.reset();
-    toast({
-      title: 'Question Submitted',
-      description: 'Your question has been added to the list.',
-    });
+      let attendeeName = 'Anonymous';
+      let attendeeAffiliation = 'N/A';
+
+      if (!attendeeSnapshot.empty) {
+        const attendeeData = attendeeSnapshot.docs[0].data() as Attendee;
+        attendeeName = attendeeData.name;
+        attendeeAffiliation = attendeeData.affiliation;
+      }
+
+      const questionData = {
+        text: data.question,
+        creatorId: user.uid,
+        sessionId: sessionId,
+        attendeeName,
+        attendeeAffiliation,
+      };
+
+      addDocumentNonBlocking(collection(firestore, 'questions'), questionData);
+      form.reset();
+      toast({
+        title: 'Question Submitted',
+        description: 'Your question has been added to the list.',
+      });
+    } catch (error) {
+       console.error("Error submitting question: ", error);
+       toast({
+         variant: "destructive",
+         title: "Submission Failed",
+         description: "Could not fetch attendee details. Please try again.",
+       });
+    }
   };
 
   const getPriorityBadgeVariant = (score: number) => {
@@ -159,6 +194,15 @@ export function QuestionInterface({
     const session = presentationSchedule.find((s) => s.id === sessionId);
     return session ? session.title : 'Unknown Session';
   };
+  
+  const questionsBySession = useMemo(() => {
+    if (!allQuestions) return {};
+    return allQuestions.reduce((acc, q) => {
+      (acc[q.sessionId] = acc[q.sessionId] || []).push(q);
+      return acc;
+    }, {} as Record<string, Question[]>);
+  }, [allQuestions]);
+
 
   return (
     <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
@@ -212,37 +256,52 @@ export function QuestionInterface({
           </Card>
         )}
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Submitted Questions</CardTitle>
-            <CardDescription>
-              {allQuestions && allQuestions.length > 0
-                ? 'Here are the questions from the audience.'
-                : 'No questions have been submitted yet.'}
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            {isLoadingQuestions ? (
-              <div className="flex justify-center">
-                <Loader2 className="h-6 w-6 animate-spin" />
-              </div>
-            ) : allQuestions && allQuestions.length > 0 ? (
-              <ul className="space-y-4">
-                {allQuestions.map((q) => (
-                  <li
-                    key={q.id}
-                    className="rounded-md border bg-secondary/50 p-3"
-                  >
-                    <p className="text-sm">{q.text}</p>
-                    <p className="mt-2 text-xs text-muted-foreground">
-                      For: {getSessionTopic(q.sessionId)}
-                    </p>
-                  </li>
-                ))}
-              </ul>
-            ) : null}
-          </CardContent>
-        </Card>
+        <div className="space-y-6">
+          <CardHeader className="p-0">
+              <CardTitle>Submitted Questions</CardTitle>
+              <CardDescription>
+                {allQuestions && allQuestions.length > 0
+                  ? 'Here are the questions from the audience.'
+                  : 'No questions have been submitted yet.'}
+              </CardDescription>
+            </CardHeader>
+          {isLoadingQuestions ? (
+            <div className="flex justify-center pt-8">
+              <Loader2 className="h-6 w-6 animate-spin" />
+            </div>
+          ) : Object.keys(questionsBySession).length > 0 ? (
+             Object.entries(questionsBySession).map(([sessionId, questions]) => (
+              <Card key={sessionId}>
+                <CardHeader>
+                  <CardTitle className="text-lg">{getSessionTopic(sessionId)}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ul className="space-y-4">
+                    {questions.map((q) => (
+                      <li
+                        key={q.id}
+                        className="rounded-md border bg-secondary/50 p-3"
+                      >
+                        <p className="text-sm">{q.text}</p>
+                        <p className="mt-2 text-xs text-muted-foreground">
+                          From: {q.attendeeName} ({q.attendeeAffiliation})
+                        </p>
+                      </li>
+                    ))}
+                  </ul>
+                </CardContent>
+              </Card>
+            ))
+          ) : (
+             !sessionId && (
+              <Card>
+                <CardContent className="pt-6">
+                   <p className="text-center text-muted-foreground">No questions submitted yet.</p>
+                </CardContent>
+              </Card>
+             )
+          )}
+        </div>
       </div>
 
       <div>
