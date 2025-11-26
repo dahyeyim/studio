@@ -12,7 +12,7 @@ export interface Presentation {
   presenter: string;
   time: string;
   description: string;
-  downloadUrl: string;
+  downloadUrl: string | null;
 }
 
 export const attendees: Attendee[] = [
@@ -67,7 +67,7 @@ export const presentationSchedule: Presentation[] = [
     presenter: 'All Attendees',
     time: '08:30 - 08:50',
     description: '참석자 등록 및 커피 브레이크',
-    downloadUrl: '#',
+    downloadUrl: null,
   },
   {
     id: 'p2',
@@ -75,7 +75,7 @@ export const presentationSchedule: Presentation[] = [
     presenter: 'Executive Director of NIRD / KOICA Resident Representative',
     time: '09:00 - 09:15',
     description: '개회사',
-    downloadUrl: '#',
+    downloadUrl: null,
   },
   {
     id: 'p3',
@@ -83,7 +83,7 @@ export const presentationSchedule: Presentation[] = [
     presenter: 'All Attendees',
     time: '09:15 - 09:20',
     description: '단체 사진 촬영',
-    downloadUrl: '#',
+    downloadUrl: null,
   },
   {
     id: 'p4',
@@ -99,7 +99,7 @@ export const presentationSchedule: Presentation[] = [
     presenter: 'All Attendees',
     time: '10:50 - 11:20',
     description: '커피 브레이크',
-    downloadUrl: '#',
+    downloadUrl: null,
   },
   {
     id: 'p6',
@@ -115,7 +115,7 @@ export const presentationSchedule: Presentation[] = [
     presenter: 'All Attendees',
     time: '12:50 - 14:20',
     description: '점심 식사',
-    downloadUrl: '#',
+    downloadUrl: null,
   },
   {
     id: 'p8',
@@ -139,7 +139,7 @@ export const presentationSchedule: Presentation[] = [
     presenter: 'All Attendees',
     time: '16:10 - 16:40',
     description: '휴식 시간',
-    downloadUrl: '#',
+    downloadUrl: null,
   },
   {
     id: 'p11',
@@ -156,6 +156,6 @@ export const presentationSchedule: Presentation[] = [
     presenter: 'All Attendees',
     time: '17:20 - 17:30',
     description: '폐회',
-    downloadUrl: '#',
+    downloadUrl: null,
   },
 ];

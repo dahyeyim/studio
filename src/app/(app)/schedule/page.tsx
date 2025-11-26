@@ -35,12 +35,14 @@ export default function SchedulePage() {
               <p>{item.description}</p>
             </CardContent>
             <CardFooter className="flex flex-wrap gap-2 bg-card-foreground/5">
-              <Button variant="outline" asChild>
-                <a href={item.downloadUrl} download>
-                  <Download className="mr-2 h-4 w-4" />
-                  Download Materials
-                </a>
-              </Button>
+              {item.downloadUrl && (
+                <Button variant="outline" asChild>
+                  <a href={item.downloadUrl} download>
+                    <Download className="mr-2 h-4 w-4" />
+                    Download Materials
+                  </a>
+                </Button>
+              )}
               {item.title.toUpperCase().includes('SESSION') && (
                 <Button asChild>
                   <Link href="/questions">
