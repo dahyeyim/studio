@@ -22,14 +22,18 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { useAuth, useFirebase } from '@/firebase';
-import { collection, addDoc } from 'firebase/firestore';
+import { useFirebase } from '@/firebase';
+import { collection } from 'firebase/firestore';
 import { addDocumentNonBlocking } from '@/firebase';
 import { Loader2 } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
 
 const formSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters.'),
   affiliation: z.string().min(2, 'Affiliation must be at least 2 characters.'),
+  department: z.string().min(2, 'Department must be at least 2 characters.'),
+  position: z.string().min(2, 'Position must be at least 2 characters.'),
+  email: z.string().email('Please enter a valid email address.'),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -38,18 +42,27 @@ export default function RegistrationPage() {
   const router = useRouter();
   const { firestore, user } = useFirebase();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { toast } = useToast();
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: '',
       affiliation: '',
+      department: '',
+      position: '',
+      email: '',
     },
   });
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
     if (!firestore || !user) {
       console.error('Firestore or user not available');
+      toast({
+        variant: 'destructive',
+        title: 'Error',
+        description: 'Registration service is not available. Please try again later.',
+      });
       return;
     }
     setIsSubmitting(true);
@@ -59,9 +72,20 @@ export default function RegistrationPage() {
         ...data,
         creatorId: user.uid,
       });
+      
+      toast({
+        title: 'Registration Successful',
+        description: 'Thank you for registering. You will be redirected shortly.',
+      });
+
       router.push('/attendees');
     } catch (error) {
       console.error('Error adding attendee: ', error);
+      toast({
+        variant: 'destructive',
+        title: 'Registration Failed',
+        description: 'An unexpected error occurred. Please try again.',
+      });
       setIsSubmitting(false);
     }
   };
@@ -72,7 +96,7 @@ export default function RegistrationPage() {
         <CardHeader>
           <CardTitle>The 2nd Korea-Mongolia Urban Forum</CardTitle>
           <CardDescription>
-            Please enter your name and affiliation to register.
+            Please enter your information to register.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -96,10 +120,58 @@ export default function RegistrationPage() {
                 name="affiliation"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Affiliation</FormLabel>
+                    <FormLabel>Affiliation (Institution)</FormLabel>
                     <FormControl>
                       <Input
                         placeholder="e.g. Firebase University"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="department"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Department</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="e.g. Urban Planning"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+               <FormField
+                control={form.control}
+                name="position"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Position</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="e.g. Researcher"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+               <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Email</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="e.g. john.doe@example.com"
                         {...field}
                       />
                     </FormControl>

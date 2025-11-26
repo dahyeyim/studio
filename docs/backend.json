@@ -14,6 +14,19 @@
           "type": "string",
           "description": "The attendee's affiliation (e.g., company, university)."
         },
+        "department": {
+          "type": "string",
+          "description": "The department within the attendee's affiliation."
+        },
+        "position": {
+          "type": "string",
+          "description": "The job title or position of the attendee."
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "The email address of the attendee."
+        },
         "creatorId": {
           "type": "string",
           "description": "The Firebase UID of the user who created the entry."
@@ -22,6 +35,9 @@
       "required": [
         "name",
         "affiliation",
+        "department",
+        "position",
+        "email",
         "creatorId"
       ]
     },
