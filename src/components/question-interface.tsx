@@ -203,6 +203,13 @@ export function QuestionInterface({
     }, {} as Record<string, Question[]>);
   }, [allQuestions]);
 
+  const sortedSessionIds = useMemo(() => {
+    const sessionIdsFromQuestions = Object.keys(questionsBySession);
+    return presentationSchedule
+      .map(s => s.id)
+      .filter(id => sessionIdsFromQuestions.includes(id));
+  }, [questionsBySession]);
+
 
   return (
     <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
@@ -269,15 +276,15 @@ export function QuestionInterface({
             <div className="flex justify-center pt-8">
               <Loader2 className="h-6 w-6 animate-spin" />
             </div>
-          ) : Object.keys(questionsBySession).length > 0 ? (
-             Object.entries(questionsBySession).map(([sessionId, questions]) => (
+          ) : sortedSessionIds.length > 0 ? (
+             sortedSessionIds.map((sessionId) => (
               <Card key={sessionId}>
                 <CardHeader>
                   <CardTitle className="text-lg">{getSessionTopic(sessionId)}</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <ul className="space-y-4">
-                    {questions.map((q) => (
+                    {questionsBySession[sessionId].map((q) => (
                       <li
                         key={q.id}
                         className="rounded-md border bg-secondary/50 p-3"
