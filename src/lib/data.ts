@@ -47,7 +47,7 @@ export const presentationSchedule: Presentation[] = [
     time: '09:20 - 10:50',
     description: 'Presentations (20 min), Discussion (50 min), Q&A (20 min)',
     downloadUrls: {
-      korean: '/downloads/session1-korean.pdf',
+      korean: 'https://drive.google.com/file/d/1uLV1Wdum8v4haoYGhTEsWMqD1RGdwaIB/view?usp=drive_link',
       mongolian: '/downloads/session1-mongolian.pdf',
     },
     isSession: true,
