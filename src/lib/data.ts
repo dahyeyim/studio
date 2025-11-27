@@ -5,7 +5,10 @@ export interface Presentation {
   presenter: string;
   time: string;
   description: string;
-  downloadUrl: string | null;
+  downloadUrls: {
+    korean: string | null;
+    mongolian: string | null;
+  } | null;
   isSession: boolean;
 }
 
@@ -16,7 +19,7 @@ export const presentationSchedule: Presentation[] = [
     presenter: 'All Attendees',
     time: '08:30 - 08:50',
     description: '',
-    downloadUrl: null,
+    downloadUrls: null,
     isSession: false,
   },
   {
@@ -25,7 +28,7 @@ export const presentationSchedule: Presentation[] = [
     presenter: 'Executive Director of NIRD / KOICA Resident Representative',
     time: '09:00 - 09:15',
     description: '',
-    downloadUrl: null,
+    downloadUrls: null,
     isSession: false,
   },
   {
@@ -34,7 +37,7 @@ export const presentationSchedule: Presentation[] = [
     presenter: 'All Attendees',
     time: '09:15 - 09:20',
     description: '',
-    downloadUrl: null,
+    downloadUrls: null,
     isSession: false,
   },
   {
@@ -43,7 +46,10 @@ export const presentationSchedule: Presentation[] = [
     presenter: 'Mongolia & Korea Presentations',
     time: '09:20 - 10:50',
     description: 'Presentations (20 min), Discussion (50 min), Q&A (20 min)',
-    downloadUrl: '/downloads/session1.pdf',
+    downloadUrls: {
+      korean: '/downloads/session1-korean.pdf',
+      mongolian: '/downloads/session1-mongolian.pdf',
+    },
     isSession: true,
   },
   {
@@ -52,7 +58,7 @@ export const presentationSchedule: Presentation[] = [
     presenter: 'All Attendees',
     time: '10:50 - 11:20',
     description: '',
-    downloadUrl: null,
+    downloadUrls: null,
     isSession: false,
   },
   {
@@ -61,7 +67,10 @@ export const presentationSchedule: Presentation[] = [
     presenter: 'Mongolia Presentation',
     time: '11:20 - 12:40',
     description: 'Presentation (10 min), Discussion (50 min), Q&A (20 min)',
-    downloadUrl: '/downloads/session2.pdf',
+    downloadUrls: {
+      korean: '/downloads/session2-korean.pdf',
+      mongolian: '/downloads/session2-mongolian.pdf',
+    },
     isSession: true,
   },
   {
@@ -70,7 +79,7 @@ export const presentationSchedule: Presentation[] = [
     presenter: 'All Attendees',
     time: '12:50 - 14:20',
     description: '',
-    downloadUrl: null,
+    downloadUrls: null,
     isSession: false,
   },
   {
@@ -79,7 +88,10 @@ export const presentationSchedule: Presentation[] = [
     presenter: 'Mongolia & Korea Presentations',
     time: '14:20 - 15:50',
     description: 'Presentations (20 min), Discussion (50 min), Q&A (20 min)',
-    downloadUrl: '/downloads/session3.pdf',
+    downloadUrls: {
+      korean: '/downloads/session3-korean.pdf',
+      mongolian: '/downloads/session3-mongolian.pdf',
+    },
     isSession: true,
   },
   {
@@ -88,7 +100,10 @@ export const presentationSchedule: Presentation[] = [
     presenter: 'Young Researchers',
     time: '15:50 - 16:10',
     description: '',
-    downloadUrl: '/downloads/khunnu-master-plan.pdf',
+    downloadUrls: {
+      korean: '/downloads/khunnu-master-plan-korean.pdf',
+      mongolian: '/downloads/khunnu-master-plan-mongolian.pdf',
+    },
     isSession: false,
   },
   {
@@ -97,7 +112,7 @@ export const presentationSchedule: Presentation[] = [
     presenter: 'All Attendees',
     time: '16:10 - 16:40',
     description: '',
-    downloadUrl: null,
+    downloadUrls: null,
     isSession: false,
   },
   {
@@ -107,7 +122,10 @@ export const presentationSchedule: Presentation[] = [
     presenter: 'All Speakers',
     time: '16:40 - 17:20',
     description: 'Discussion (20 min), Q&A (20 min)',
-    downloadUrl: '/downloads/conclusion.pdf',
+    downloadUrls: {
+      korean: '/downloads/conclusion-korean.pdf',
+      mongolian: '/downloads/conclusion-mongolian.pdf',
+    },
     isSession: true,
   },
   {
@@ -116,7 +134,7 @@ export const presentationSchedule: Presentation[] = [
     presenter: 'All Attendees',
     time: '17:20 - 17:30',
     description: '',
-    downloadUrl: null,
+    downloadUrls: null,
     isSession: false,
   },
 ];
@@ -213,7 +231,7 @@ export const presenters: Presenter[] = [
   },
   {
     id: 'presenter-b-ariunjargalan',
-    name: 'B. Ariunjargalan',
+    name: 'B.Ariunjargalan',
     affiliation: 'Senior Lecturer, Dept. of Urban Planning, MUST',
     imageUrl: 'https://images.unsplash.com/photo-1554151228-14d9def656e4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHx3b21hbiUyMHBvcnRyYWl0fGVufDB8fHx8MTc2NTQxOTk5Nnww&ixlib=rb-4.1.0&q=80&w=1080',
     imageHint: 'woman portrait',

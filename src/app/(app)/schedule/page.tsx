@@ -45,11 +45,19 @@ export default function SchedulePage() {
               <p>{item.description}</p>
             </CardContent>
             <CardFooter className="flex flex-wrap gap-2 bg-card-foreground/5">
-              {item.downloadUrl && (
+              {item.downloadUrls?.korean && (
                 <Button variant="outline" asChild>
-                  <a href={item.downloadUrl} download>
+                  <a href={item.downloadUrls.korean} download>
                     <Download className="mr-2 h-4 w-4" />
-                    Download Materials
+                    Download Materials (KR)
+                  </a>
+                </Button>
+              )}
+              {item.downloadUrls?.mongolian && (
+                <Button variant="outline" asChild>
+                  <a href={item.downloadUrls.mongolian} download>
+                    <Download className="mr-2 h-4 w-4" />
+                    Download Materials (MN)
                   </a>
                 </Button>
               )}
