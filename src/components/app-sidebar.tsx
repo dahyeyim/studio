@@ -18,7 +18,7 @@ import { useMemo } from 'react';
 
 export function AppSidebar() {
   const pathname = usePathname();
-  const { user, isUserLoading } = useFirebase();
+  const { user, isUserLoading, firestore } = useFirebase();
 
   const attendeeQuery = useMemoFirebase(() => {
     if (!firestore || !user?.uid) return null;
@@ -75,8 +75,6 @@ export function AppSidebar() {
       ...baseMenuItems,
     ];
   }, [isLoading, hasRegistered, baseMenuItems]);
-
-  const { firestore } = useFirebase();
 
   return (
     <>
