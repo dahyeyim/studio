@@ -90,7 +90,7 @@ export const presentationSchedule: Presentation[] = [
     description: 'Presentations (20 min), Discussion (50 min), Q&A (20 min)',
     downloadUrls: {
       korean: 'https://drive.google.com/file/d/1uLV1Wdum8v4haoYGhTEsWMqD1RGdwaIB/view?usp=drive_link',
-      mongolian: '/downloads/session3-mongolian.pdf',
+      mongolian: 'https://drive.google.com/file/d/1gmCzOrcdMjkTcputlP1jBEEy-KobBp-9/view?usp=drive_link',
     },
     isSession: true,
   },
@@ -238,5 +238,7 @@ export const presenters: Presenter[] = [
     bio: 'Dr. B. Ariunjargalan is a senior lecturer and urban redevelopment researcher in the Department of Urban Planning at the Mongolian University of Science and Technology (MUST).',
   },
 ];
+
+    
 
     
