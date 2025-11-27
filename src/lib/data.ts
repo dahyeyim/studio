@@ -1,3 +1,4 @@
+
 export interface Presentation {
   id: string;
   title: string;
@@ -211,11 +212,13 @@ export const presenters: Presenter[] = [
     bio: 'Dr. G. Gantulga is an Associate Professor in the Department of Geography at the School of Arts and Sciences, National University of Mongolia (NUM).',
   },
   {
-    id: 'presenter-b-ariunzhargalan',
-    name: 'B. Ariunzhargalan',
+    id: 'presenter-b-ariunjargalan',
+    name: 'B. Ariunjargalan',
     affiliation: 'Senior Lecturer, Dept. of Urban Planning, MUST',
-    imageUrl: 'https://picsum.photos/seed/b-ariunzhargalan/400/300',
-    imageHint: 'woman academic',
-    bio: 'Dr. B. Ariunzhargalan is a senior lecturer and urban redevelopment researcher in the Department of Urban Planning at the Mongolian University of Science and Technology (MUST).',
+    imageUrl: 'https://images.unsplash.com/photo-1554151228-14d9def656e4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHx3b21hbiUyMHBvcnRyYWl0fGVufDB8fHx8MTc2NTQxOTk5Nnww&ixlib=rb-4.1.0&q=80&w=1080',
+    imageHint: 'woman portrait',
+    bio: 'Dr. B. Ariunjargalan is a senior lecturer and urban redevelopment researcher in the Department of Urban Planning at the Mongolian University of Science and Technology (MUST).',
   },
 ];
+
+    
