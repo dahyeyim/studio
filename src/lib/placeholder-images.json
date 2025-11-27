@@ -14,13 +14,13 @@
     },
     {
       "id": "avatar-3",
-      "description": "Professional headshot of attendee Park Ji-hoon.",
+      "description": "Professional headshot of attendee Gantulga Batbold.",
       "imageUrl": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxtYW4lMjBzbWlsaW5nfGVufDB8fHx8MTc2MzczMTA1MXww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "man smiling"
     },
     {
       "id": "avatar-4",
-      "description": "Professional headshot of attendee Choi Soo-ah.",
+      "description": "Professional headshot of attendee Nomin-Erdene Tseren.",
       "imageUrl": "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHx3b21hbiUyMHByb2ZpbGV8ZW58MHx8fHwxNzYzNzczNzU0fDA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "woman profile"
     },
@@ -33,7 +33,7 @@
     {
       "id": "avatar-6",
       "description": "Professional headshot of attendee Yoon Ji-ah.",
-      "imageUrl": "https://images.unsplash.com/photo-1580489944761-15a19d654956?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHx3b21hbiUyMHNtaWxpbmd8ZW58MHx8fHwxNzYzODE0MjEwfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1580489944761-15a19d654956?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHx3b21hbiUyMHNtaWxpbmd8ZW58MHx8fHwxNzYzODE0MjEwfDA&ixlib-rb-4.1.0&q=80&w=1080",
       "imageHint": "woman smiling"
     }
   ]
