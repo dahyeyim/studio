@@ -136,7 +136,7 @@ export const presenters: Presenter[] = [
     affiliation: 'Executive Director, National Institute for Regional Development',
     imageUrl: 'https://picsum.photos/seed/d-erdenebayar/400/300',
     imageHint: 'man portrait',
-    bio: 'D. Erdenebayar serves as the Executive Director of the National Institute for Regional Development, leading initiatives for balanced and sustainable regional growth across Mongolia. He is the moderator for this forum.',
+    bio: 'D. Erdenebayar serves as the Executive Director of the National Institute for Regional Development and is the moderator for this forum.',
   },
   {
     id: 'presenter-m-bayarbat',
@@ -144,7 +144,7 @@ export const presenters: Presenter[] = [
     affiliation: 'Chief Architect, Kharkhorum City',
     imageUrl: 'https://picsum.photos/seed/m-bayarbat/400/300',
     imageHint: 'architect portrait',
-    bio: 'M. Bayarbat is the Chief Architect of Kharkhorum City. He is responsible for the overall urban design and architectural vision for the new city, ensuring it aligns with historical significance and modern urban principles.',
+    bio: 'M. Bayarbat is the Chief Architect of Kharkhorum City. He is responsible for the overall urban design and architectural vision for the new city.',
   },
   {
     id: 'presenter-b-amarsanaa',
@@ -171,7 +171,7 @@ export const presenters: Presenter[] = [
     bio: 'Tae, Kyung Jin is the CEO of the XaHA (Cross-Architectural and Human-oriented Actions) Urban and Architectural Research Institute, focusing on human-centered design in urban environments.',
   },
   {
-    id: 'presenter-l-khalhtar',
+    id: 'presenter-l-khaltar',
     name: 'L. Khaltar',
     affiliation: 'Governor, Kharkhorum City',
     imageUrl: 'https://picsum.photos/seed/l-khaltar/400/300',
@@ -184,7 +184,7 @@ export const presenters: Presenter[] = [
     affiliation: 'Director, XaHA Urban and Architectural Research Institute',
     imageUrl: 'https://picsum.photos/seed/koh-seah-bum/400/300',
     imageHint: 'smiling architect',
-    bio: 'Koh, Seah Bum is a Director at the XaHA Urban and Architectural Research Institute, working alongside the CEO to lead research in innovative urban and architectural solutions.',
+    bio: 'Koh, Seah Bum is a Director at the XaHA Urban and Architectural Research Institute, leading research in innovative urban and architectural solutions.',
   },
   {
     id: 'presenter-r-rinchinbazar',
@@ -195,12 +195,12 @@ export const presenters: Presenter[] = [
     bio: 'Dr. R. Rinchinbazar is a board member of the Fiscal Stability Council and a contract professor at the National University of Mongolia (NUM), bringing extensive experience in economics and public policy.',
   },
   {
-    id: 'presenter-b-battsengel',
+    id: 'presenter-v-battsengel',
     name: 'V. Battsengel',
     affiliation: 'Director, Center for Urban and Regional Development Studies, NUM',
-    imageUrl: 'https://picsum.photos/seed/b-battsengel/400/300',
+    imageUrl: 'https://picsum.photos/seed/v-battsengel/400/300',
     imageHint: 'man giving presentation',
-    bio: 'Dr. Prof. V. Battsengel is the Director of the Center for Urban and Regional Development Studies at the National University of Mongolia (NUM), leading academic research in the field.',
+    bio: 'Dr. Prof. V. Battsengel is the Director of the Center for Urban and Regional Development Studies at the National University of Mongolia (NUM).',
   },
   {
     id: 'presenter-g-gantulga',
