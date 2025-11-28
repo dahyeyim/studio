@@ -238,7 +238,3 @@ export const presenters: Presenter[] = [
     bio: 'Dr. B. Ariunjargalan is a senior lecturer and urban redevelopment researcher in the Department of Urban Planning at the Mongolian University of Science and Technology (MUST).',
   },
 ];
-
-    
-
-    
