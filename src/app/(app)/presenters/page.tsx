@@ -156,6 +156,16 @@ export default function PresentersPage() {
       return;
     }
 
+    let processedData = { ...data };
+    if (processedData.imageUrl.startsWith('gs://')) {
+      const bucketAndPath = processedData.imageUrl.substring(5);
+      const [bucket, ...pathParts] = bucketAndPath.split('/');
+      const path = pathParts.join('/');
+      processedData.imageUrl = `https://firebasestorage.googleapis.com/v0/b/${bucket}/o/${encodeURIComponent(
+        path
+      )}?alt=media`;
+    }
+
     try {
       if (selectedPresenter) {
         // Update existing presenter
@@ -164,18 +174,18 @@ export default function PresentersPage() {
           'presenters',
           selectedPresenter.id
         );
-        await updateDoc(presenterDocRef, data);
+        await updateDoc(presenterDocRef, processedData);
         toast({
           title: 'Presenter Updated',
-          description: `${data.name}'s information has been updated.`,
+          description: `${processedData.name}'s information has been updated.`,
         });
       } else {
         // Add new presenter
         const presentersCollection = collection(firestore, 'presenters');
-        await addDocumentNonBlocking(presentersCollection, data);
+        await addDocumentNonBlocking(presentersCollection, processedData);
         toast({
           title: 'Presenter Added',
-          description: `${data.name} has been added to the list.`,
+          description: `${processedData.name} has been added to the list.`,
         });
       }
       form.reset();
