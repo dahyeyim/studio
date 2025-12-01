@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react';
 import {
   Card,
-  CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
@@ -27,7 +26,6 @@ import {
   writeBatch,
   query,
   doc,
-  deleteDoc,
 } from 'firebase/firestore';
 import Image from 'next/image';
 import { staticPresenters } from '@/lib/data';
