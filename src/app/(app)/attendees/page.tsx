@@ -34,7 +34,8 @@ interface Attendee {
   department: string;
   position: string;
   email: string;
-  biography?: string;
+  education?: string;
+  experience?: string;
 }
 
 export default function AttendeesPage() {
@@ -154,11 +155,19 @@ export default function AttendeesPage() {
                     {selectedAttendee.email}
                   </p>
                 </div>
-                {selectedAttendee.biography && (
+                {selectedAttendee.education && (
                   <div>
-                    <h4 className="font-semibold text-sm">Biography</h4>
+                    <h4 className="font-semibold text-sm">Education</h4>
                     <p className="text-sm text-muted-foreground whitespace-pre-line">
-                      {selectedAttendee.biography}
+                      {selectedAttendee.education}
+                    </p>
+                  </div>
+                )}
+                {selectedAttendee.experience && (
+                  <div>
+                    <h4 className="font-semibold text-sm">Experience</h4>
+                    <p className="text-sm text-muted-foreground whitespace-pre-line">
+                      {selectedAttendee.experience}
                     </p>
                   </div>
                 )}

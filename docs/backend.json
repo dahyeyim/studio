@@ -31,9 +31,13 @@
           "type": "string",
           "description": "The Firebase UID of the user who created the entry."
         },
-        "biography": {
+        "education": {
           "type": "string",
-          "description": "A short biography of the attendee."
+          "description": "The educational background of the attendee."
+        },
+        "experience": {
+          "type": "string",
+          "description": "The professional experience of the attendee."
         }
       },
       "required": [
