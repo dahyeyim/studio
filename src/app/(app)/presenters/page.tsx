@@ -53,14 +53,13 @@ interface Presenter {
   affiliation: string;
   bio?: string;
   imageUrl: string;
-  imageHint: string;
+  imageHint?: string;
 }
 
 const formSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters.'),
   affiliation: z.string().min(2, 'Affiliation must be at least 2 characters.'),
   imageUrl: z.string().url('Please enter a valid URL for the image.'),
-  imageHint: z.string().min(2, 'Image hint must be at least 2 characters.'),
   bio: z.string().optional(),
 });
 
@@ -81,7 +80,6 @@ export default function PresentersPage() {
       name: '',
       affiliation: '',
       imageUrl: '',
-      imageHint: '',
       bio: '',
     },
   });
@@ -135,7 +133,6 @@ export default function PresentersPage() {
         name: '',
         affiliation: '',
         imageUrl: '',
-        imageHint: '',
         bio: '',
       });
     }
@@ -305,19 +302,6 @@ export default function PresentersPage() {
                         placeholder="https://example.com/image.jpg"
                         {...field}
                       />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="imageHint"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Image Hint</FormLabel>
-                    <FormControl>
-                      <Input placeholder="e.g. woman smiling" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

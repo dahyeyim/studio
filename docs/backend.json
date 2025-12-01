@@ -101,13 +101,9 @@
         "imageUrl": {
           "type": "string",
           "description": "A URL to the presenter's profile image."
-        },
-        "imageHint": {
-          "type": "string",
-          "description": "A hint for AI to find a similar image."
         }
       },
-      "required": ["name", "affiliation", "imageUrl", "imageHint"]
+      "required": ["name", "affiliation", "imageUrl"]
     }
   },
   "auth": {
