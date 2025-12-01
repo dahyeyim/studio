@@ -1,6 +1,9 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useForm, type SubmitHandler } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
 import {
   Card,
   CardContent,
@@ -14,8 +17,22 @@ import {
   DialogHeader,
   DialogTitle,
   DialogDescription,
+  DialogTrigger,
+  DialogFooter,
+  DialogClose,
 } from '@/components/ui/dialog';
-import { Loader2 } from 'lucide-react';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Button } from '@/components/ui/button';
+import { Loader2, PlusCircle } from 'lucide-react';
 import { useCollection, useFirebase, useMemoFirebase } from '@/firebase';
 import {
   collection,
@@ -26,6 +43,8 @@ import {
 } from 'firebase/firestore';
 import Image from 'next/image';
 import { staticPresenters } from '@/lib/data';
+import { addDocumentNonBlocking } from '@/firebase/non-blocking-updates';
+import { useToast } from '@/hooks/use-toast';
 
 interface Presenter {
   id: string;
@@ -36,11 +55,35 @@ interface Presenter {
   imageHint: string;
 }
 
+const formSchema = z.object({
+  name: z.string().min(2, 'Name must be at least 2 characters.'),
+  affiliation: z.string().min(2, 'Affiliation must be at least 2 characters.'),
+  imageUrl: z.string().url('Please enter a valid URL for the image.'),
+  imageHint: z.string().min(2, 'Image hint must be at least 2 characters.'),
+  bio: z.string().optional(),
+});
+
+type FormValues = z.infer<typeof formSchema>;
+
 export default function PresentersPage() {
-  const { firestore } = useFirebase();
+  const { firestore, user } = useFirebase();
   const [selectedPresenter, setSelectedPresenter] = useState<Presenter | null>(
     null
   );
+  const [isSeeding, setIsSeeding] = useState(false);
+  const [isAddPresenterOpen, setAddPresenterOpen] = useState(false);
+  const { toast } = useToast();
+
+  const form = useForm<FormValues>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      name: '',
+      affiliation: '',
+      imageUrl: '',
+      imageHint: '',
+      bio: '',
+    },
+  });
 
   const presentersQuery = useMemoFirebase(
     () => (firestore ? query(collection(firestore, 'presenters')) : null),
@@ -49,24 +92,20 @@ export default function PresentersPage() {
   const { data: presenters, isLoading: isLoadingPresenters } =
     useCollection<Presenter>(presentersQuery);
 
-  const [isSeeding, setIsSeeding] = useState(false);
-
   useEffect(() => {
     const seedData = async () => {
       if (!firestore) return;
 
-      // Use a flag in sessionStorage to ensure this runs only once per session
       if (sessionStorage.getItem('presentersSeeded')) {
         setIsSeeding(false);
         return;
       }
-      
+
       setIsSeeding(true);
       try {
         const presentersCollection = collection(firestore, 'presenters');
         const snapshot = await getDocs(presentersCollection);
-        
-        // Only seed if the collection is empty
+
         if (snapshot.empty) {
           const addBatch = writeBatch(firestore);
           staticPresenters.forEach((presenter) => {
@@ -76,7 +115,6 @@ export default function PresentersPage() {
           await addBatch.commit();
         }
 
-        // Set flag after seeding
         sessionStorage.setItem('presentersSeeded', 'true');
       } catch (error) {
         console.error('Error seeding presenters data:', error);
@@ -88,18 +126,170 @@ export default function PresentersPage() {
     seedData();
   }, [firestore]);
 
+  const onSubmit: SubmitHandler<FormValues> = async (data) => {
+    if (!firestore || !user) {
+      toast({
+        variant: 'destructive',
+        title: 'Error',
+        description: 'You must be signed in to add a presenter.',
+      });
+      return;
+    }
+
+    try {
+      const presentersCollection = collection(firestore, 'presenters');
+      await addDocumentNonBlocking(presentersCollection, {
+        ...data,
+      });
+
+      toast({
+        title: 'Presenter Added',
+        description: `${data.name} has been added to the list.`,
+      });
+      form.reset();
+      setAddPresenterOpen(false);
+    } catch (error) {
+      console.error('Error adding presenter: ', error);
+      toast({
+        variant: 'destructive',
+        title: 'Submission Failed',
+        description: 'An unexpected error occurred. Please try again.',
+      });
+    }
+  };
+
   const isLoading = isLoadingPresenters || isSeeding;
 
   return (
     <>
       <div className="flex flex-1 flex-col p-4 md:p-6">
-        <header className="mb-6">
-          <h1 className="font-headline text-3xl font-semibold tracking-tight">
-            Presenters
-          </h1>
-          <p className="text-muted-foreground">
-            Meet the speakers of the forum.
-          </p>
+        <header className="mb-6 flex items-center justify-between">
+          <div>
+            <h1 className="font-headline text-3xl font-semibold tracking-tight">
+              Presenters
+            </h1>
+            <p className="text-muted-foreground">
+              Meet the speakers of the forum.
+            </p>
+          </div>
+          <Dialog open={isAddPresenterOpen} onOpenChange={setAddPresenterOpen}>
+            <DialogTrigger asChild>
+              <Button>
+                <PlusCircle className="mr-2" />
+                Add Presenter
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-md">
+              <DialogHeader>
+                <DialogTitle>Add a New Presenter</DialogTitle>
+                <DialogDescription>
+                  Enter the details for the new presenter.
+                </DialogDescription>
+              </DialogHeader>
+              <Form {...form}>
+                <form
+                  id="add-presenter-form"
+                  onSubmit={form.handleSubmit(onSubmit)}
+                  className="space-y-4"
+                >
+                  <FormField
+                    control={form.control}
+                    name="name"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Name</FormLabel>
+                        <FormControl>
+                          <Input placeholder="e.g. Jane Doe" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="affiliation"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Affiliation</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="e.g. Firebase University"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="imageUrl"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Photo URL</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="https://example.com/image.jpg"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="imageHint"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Image Hint</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="e.g. woman smiling"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="bio"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Biography</FormLabel>
+                        <FormControl>
+                          <Textarea
+                            placeholder="A short bio about the presenter."
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </form>
+              </Form>
+              <DialogFooter>
+                <DialogClose asChild>
+                  <Button type="button" variant="outline">
+                    Cancel
+                  </Button>
+                </DialogClose>
+                <Button
+                  type="submit"
+                  form="add-presenter-form"
+                  disabled={form.formState.isSubmitting}
+                >
+                  {form.formState.isSubmitting && (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  )}
+                  Save Presenter
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
         </header>
 
         {isLoading ? (
