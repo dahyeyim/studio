@@ -32,16 +32,16 @@ export default function SchedulePage() {
                 {item.title}
               </CardTitle>
               <div className="flex flex-wrap items-center gap-x-4 gap-y-1 pt-2 text-sm text-muted-foreground">
+                <div className="flex items-center gap-2">
+                  <Clock className="h-4 w-4" />
+                  <span>{item.time}</span>
+                </div>
                 {item.presenter && (
                   <div className="flex items-center gap-2">
                     <User className="h-4 w-4" />
                     <span>{item.presenter}</span>
                   </div>
                 )}
-                <div className="flex items-center gap-2">
-                  <Clock className="h-4 w-4" />
-                  <span>{item.time}</span>
-                </div>
               </div>
             </CardHeader>
             <CardContent className="p-6 text-sm text-foreground/80">
