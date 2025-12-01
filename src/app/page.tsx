@@ -27,7 +27,6 @@ import { collection } from 'firebase/firestore';
 import { addDocumentNonBlocking } from '@/firebase';
 import { Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { Textarea } from '@/components/ui/textarea';
 
 const formSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters.'),
@@ -35,8 +34,6 @@ const formSchema = z.object({
   department: z.string().min(2, 'Department must be at least 2 characters.'),
   position: z.string().min(2, 'Position must be at least 2 characters.'),
   email: z.string().email('Please enter a valid email address.'),
-  education: z.string().optional(),
-  experience: z.string().optional(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -55,8 +52,6 @@ export default function RegistrationPage() {
       department: '',
       position: '',
       email: '',
-      education: '',
-      experience: '',
     },
   });
 
@@ -188,40 +183,6 @@ export default function RegistrationPage() {
                   )}
                 />
               </div>
-              <FormField
-                control={form.control}
-                name="education"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Education</FormLabel>
-                    <FormControl>
-                      <Textarea
-                        placeholder="Your educational background"
-                        className="resize-none"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="experience"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Experience</FormLabel>
-                    <FormControl>
-                      <Textarea
-                        placeholder="Your professional experience"
-                        className="resize-none"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
               <Button type="submit" className="w-full" disabled={isSubmitting}>
                 {isSubmitting && (
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
