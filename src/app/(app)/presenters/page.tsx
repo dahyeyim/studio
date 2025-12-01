@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -63,6 +64,16 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
+const transformGsUrl = (url: string) => {
+  if (url && url.startsWith('gs://')) {
+    const bucketAndPath = url.substring(5);
+    const [bucket, ...pathParts] = bucketAndPath.split('/');
+    const path = pathParts.join('/');
+    return `https://firebasestorage.googleapis.com/v0/b/${bucket}/o/${encodeURIComponent(path)}?alt=media`;
+  }
+  return url;
+};
+
 export default function PresentersPage() {
   const { firestore, user } = useFirebase();
   const [selectedPresenter, setSelectedPresenter] = useState<Presenter | null>(
@@ -77,7 +88,7 @@ export default function PresentersPage() {
     defaultValues: {
       name: '',
       affiliation: '',
-      imageUrl: undefined,
+      imageUrl: '',
       bio: '',
     },
   });
@@ -130,7 +141,7 @@ export default function PresentersPage() {
       form.reset({
         name: '',
         affiliation: '',
-        imageUrl: undefined,
+        imageUrl: '',
         bio: '',
       });
     }
@@ -138,6 +149,7 @@ export default function PresentersPage() {
 
   const handleOpenAddDialog = () => {
     setSelectedPresenter(null);
+    form.reset({ name: '', affiliation: '', imageUrl: '', bio: '' });
     setAddPresenterOpen(true);
   };
 
@@ -156,15 +168,7 @@ export default function PresentersPage() {
       return;
     }
 
-    let processedData = { ...data };
-    if (processedData.imageUrl.startsWith('gs://')) {
-      const bucketAndPath = processedData.imageUrl.substring(5);
-      const [bucket, ...pathParts] = bucketAndPath.split('/');
-      const path = pathParts.join('/');
-      processedData.imageUrl = `https://firebasestorage.googleapis.com/v0/b/${bucket}/o/${encodeURIComponent(
-        path
-      )}?alt=media`;
-    }
+    const processedData = { ...data, imageUrl: transformGsUrl(data.imageUrl) };
 
     try {
       if (selectedPresenter) {
@@ -227,28 +231,31 @@ export default function PresentersPage() {
           </div>
         ) : (
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {presenters?.map((presenter) => (
-              <Card
-                key={presenter.id}
-                onClick={() => handleOpenEditDialog(presenter)}
-                className="group cursor-pointer overflow-hidden"
-              >
-                <div className="relative aspect-[4/5] overflow-hidden">
-                  {presenter.imageUrl && (
-                    <Image
-                      src={presenter.imageUrl}
-                      alt={`Portrait of ${presenter.name}`}
-                      fill
-                      className="object-cover transition-transform duration-300 group-hover:scale-105"
-                    />
-                  )}
-                </div>
-                <CardHeader>
-                  <CardTitle className="text-lg">{presenter.name}</CardTitle>
-                  <CardDescription>{presenter.affiliation}</CardDescription>
-                </CardHeader>
-              </Card>
-            ))}
+            {presenters?.map((presenter) => {
+              const imageUrl = transformGsUrl(presenter.imageUrl);
+              return (
+                <Card
+                  key={presenter.id}
+                  onClick={() => handleOpenEditDialog(presenter)}
+                  className="group cursor-pointer overflow-hidden"
+                >
+                  <div className="relative aspect-[4/5] overflow-hidden">
+                    {imageUrl && (
+                      <Image
+                        src={imageUrl}
+                        alt={`Portrait of ${presenter.name}`}
+                        fill
+                        className="object-cover transition-transform duration-300 group-hover:scale-105"
+                      />
+                    )}
+                  </div>
+                  <CardHeader>
+                    <CardTitle className="text-lg">{presenter.name}</CardTitle>
+                    <CardDescription>{presenter.affiliation}</CardDescription>
+                  </CardHeader>
+                </Card>
+              );
+            })}
           </div>
         )}
       </div>
@@ -360,3 +367,5 @@ export default function PresentersPage() {
     </>
   );
 }
+
+    
