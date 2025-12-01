@@ -14,7 +14,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { useCollection, useFirebase, useMemoFirebase } from '@/firebase';
-import { collection, query, writeBatch } from 'firebase/firestore';
+import { collection, query, writeBatch, doc } from 'firebase/firestore';
 import { Loader2 } from 'lucide-react';
 import { staticPresenters } from '@/lib/data';
 
@@ -48,7 +48,7 @@ export default function PresentersPage() {
           const presentersCollection = collection(firestore, 'presenters');
           
           staticPresenters.forEach(presenter => {
-            const docRef = collection(firestore, 'presenters').doc();
+            const docRef = doc(presentersCollection); // Create a new doc with auto-generated ID
             batch.set(docRef, presenter);
           });
 
