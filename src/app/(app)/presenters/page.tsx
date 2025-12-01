@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Image from 'next/image';
 import {
   Card,
@@ -14,7 +14,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { useCollection, useFirebase, useMemoFirebase } from '@/firebase';
-import { collection, query, getDocs, writeBatch, doc } from 'firebase/firestore';
+import { collection, query } from 'firebase/firestore';
 import { Loader2 } from 'lucide-react';
 
 interface Presenter {
@@ -25,26 +25,6 @@ interface Presenter {
   imageHint: string;
   bio: string;
 }
-
-const staticPresenters: Omit<Presenter, 'id'>[] = [
-  {
-    name: 'B.Ariunjargalan',
-    affiliation: 'National Institute for Regional and Urban Development',
-    imageUrl:
-      'https://images.unsplash.com/photo-1494790108377-be9c29b29330?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHx3b21hbiUyMHBvcnRyYWl0fGVufDB8fHx8MTc2Mzc0NTI0MXww&ixlib=rb-4.1.0&q=80&w=1080',
-    imageHint: 'woman portrait',
-    bio: 'B. Ariunjargalan is a leading researcher at the National Institute for Regional and Urban Development, specializing in sustainable urban planning and infrastructure. With over 15 years of experience, she has been instrumental in shaping policies for smart city development in Mongolia. Her work focuses on integrating green technologies and community-centric designs into modern urban environments.',
-  },
-  {
-    name: 'Kim Min-jun',
-    affiliation: 'Seoul Metropolitan Government',
-    imageUrl:
-      'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxtYW4lMjBwb3J0cmFpdHxlbnwwfHx8fDE3NjM4MDkyNTJ8MA&ixlib=rb-4.1.0&q=80&w=1080',
-    imageHint: 'man portrait',
-    bio: 'Kim Min-jun is a senior urban planner for the Seoul Metropolitan Government. He has led numerous successful urban regeneration projects, transforming old industrial areas into vibrant cultural hubs. His expertise lies in public-private partnerships and the implementation of technology-driven solutions to improve city life. He is a strong advocate for data-informed policy making.',
-  },
-];
-
 
 export default function PresentersPage() {
   const { firestore } = useFirebase();
@@ -57,39 +37,6 @@ export default function PresentersPage() {
     [firestore]
   );
   const { data: presenters, isLoading } = useCollection<Presenter>(presentersQuery);
-
-  useEffect(() => {
-    if (!firestore) return;
-
-    const seedData = async () => {
-       // This check prevents the seeding from running more than once per session.
-      if (sessionStorage.getItem('presenters_seeded')) {
-        return;
-      }
-      
-      const presentersCollection = collection(firestore, 'presenters');
-      const snapshot = await getDocs(presentersCollection);
-      
-      const batch = writeBatch(firestore);
-
-      // Delete all existing documents
-      snapshot.docs.forEach((doc) => {
-        batch.delete(doc.ref);
-      });
-
-      // Add the two new presenters
-      staticPresenters.forEach((presenter) => {
-        const newDocRef = doc(presentersCollection); // Create a new doc with auto-generated ID
-        batch.set(newDocRef, presenter);
-      });
-
-      await batch.commit();
-      sessionStorage.setItem('presenters_seeded', 'true');
-    };
-
-    seedData();
-  }, [firestore]);
-
 
   return (
     <>
