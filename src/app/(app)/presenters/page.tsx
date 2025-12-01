@@ -40,6 +40,7 @@ import {
   writeBatch,
   query,
   doc,
+  updateDoc,
 } from 'firebase/firestore';
 import Image from 'next/image';
 import { staticPresenters } from '@/lib/data';
@@ -126,30 +127,67 @@ export default function PresentersPage() {
     seedData();
   }, [firestore]);
 
+  useEffect(() => {
+    if (selectedPresenter) {
+      form.reset(selectedPresenter);
+    } else {
+      form.reset({
+        name: '',
+        affiliation: '',
+        imageUrl: '',
+        imageHint: '',
+        bio: '',
+      });
+    }
+  }, [selectedPresenter, form]);
+
+  const handleOpenAddDialog = () => {
+    setSelectedPresenter(null);
+    setAddPresenterOpen(true);
+  };
+
+  const handleOpenEditDialog = (presenter: Presenter) => {
+    setSelectedPresenter(presenter);
+    setAddPresenterOpen(true);
+  };
+
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
     if (!firestore || !user) {
       toast({
         variant: 'destructive',
         title: 'Error',
-        description: 'You must be signed in to add a presenter.',
+        description: 'You must be signed in to add or edit a presenter.',
       });
       return;
     }
 
     try {
-      const presentersCollection = collection(firestore, 'presenters');
-      await addDocumentNonBlocking(presentersCollection, {
-        ...data,
-      });
-
-      toast({
-        title: 'Presenter Added',
-        description: `${data.name} has been added to the list.`,
-      });
+      if (selectedPresenter) {
+        // Update existing presenter
+        const presenterDocRef = doc(
+          firestore,
+          'presenters',
+          selectedPresenter.id
+        );
+        await updateDoc(presenterDocRef, data);
+        toast({
+          title: 'Presenter Updated',
+          description: `${data.name}'s information has been updated.`,
+        });
+      } else {
+        // Add new presenter
+        const presentersCollection = collection(firestore, 'presenters');
+        await addDocumentNonBlocking(presentersCollection, data);
+        toast({
+          title: 'Presenter Added',
+          description: `${data.name} has been added to the list.`,
+        });
+      }
       form.reset();
       setAddPresenterOpen(false);
+      setSelectedPresenter(null);
     } catch (error) {
-      console.error('Error adding presenter: ', error);
+      console.error('Error saving presenter: ', error);
       toast({
         variant: 'destructive',
         title: 'Submission Failed',
@@ -172,124 +210,10 @@ export default function PresentersPage() {
               Meet the speakers of the forum.
             </p>
           </div>
-          <Dialog open={isAddPresenterOpen} onOpenChange={setAddPresenterOpen}>
-            <DialogTrigger asChild>
-              <Button>
-                <PlusCircle className="mr-2" />
-                Add Presenter
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-md">
-              <DialogHeader>
-                <DialogTitle>Add a New Presenter</DialogTitle>
-                <DialogDescription>
-                  Enter the details for the new presenter.
-                </DialogDescription>
-              </DialogHeader>
-              <Form {...form}>
-                <form
-                  id="add-presenter-form"
-                  onSubmit={form.handleSubmit(onSubmit)}
-                  className="space-y-4"
-                >
-                  <FormField
-                    control={form.control}
-                    name="name"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Name</FormLabel>
-                        <FormControl>
-                          <Input placeholder="e.g. Jane Doe" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="affiliation"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Affiliation</FormLabel>
-                        <FormControl>
-                          <Input
-                            placeholder="e.g. Firebase University"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="imageUrl"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Photo URL</FormLabel>
-                        <FormControl>
-                          <Input
-                            placeholder="https://example.com/image.jpg"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="imageHint"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Image Hint</FormLabel>
-                        <FormControl>
-                          <Input
-                            placeholder="e.g. woman smiling"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="bio"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Biography</FormLabel>
-                        <FormControl>
-                          <Textarea
-                            placeholder="A short bio about the presenter."
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </form>
-              </Form>
-              <DialogFooter>
-                <DialogClose asChild>
-                  <Button type="button" variant="outline">
-                    Cancel
-                  </Button>
-                </DialogClose>
-                <Button
-                  type="submit"
-                  form="add-presenter-form"
-                  disabled={form.formState.isSubmitting}
-                >
-                  {form.formState.isSubmitting && (
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  )}
-                  Save Presenter
-                </Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
+          <Button onClick={handleOpenAddDialog}>
+            <PlusCircle className="mr-2" />
+            Add Presenter
+          </Button>
         </header>
 
         {isLoading ? (
@@ -301,7 +225,7 @@ export default function PresentersPage() {
             {presenters?.map((presenter) => (
               <Card
                 key={presenter.id}
-                onClick={() => setSelectedPresenter(presenter)}
+                onClick={() => handleOpenEditDialog(presenter)}
                 className="group cursor-pointer overflow-hidden"
               >
                 <div className="relative aspect-[4/5] overflow-hidden">
@@ -323,42 +247,121 @@ export default function PresentersPage() {
         )}
       </div>
 
-      <Dialog
-        open={!!selectedPresenter}
-        onOpenChange={(isOpen) => !isOpen && setSelectedPresenter(null)}
-      >
-        <DialogContent className="sm:max-w-md p-0">
-          {selectedPresenter && (
-            <>
-              <div className="relative aspect-square sm:aspect-[4/3]">
-                <Image
-                  src={selectedPresenter.imageUrl}
-                  alt={`Portrait of ${selectedPresenter.name}`}
-                  fill
-                  className="object-cover"
-                  data-ai-hint={selectedPresenter.imageHint}
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
-                <div className="absolute bottom-0 w-full p-6 text-white">
-                  <DialogTitle className="text-2xl font-bold text-primary-foreground">
-                    {selectedPresenter.name}
-                  </DialogTitle>
-                  <DialogDescription className="text-primary-foreground/90">
-                    {selectedPresenter.affiliation}
-                  </DialogDescription>
-                </div>
-              </div>
-
-              {selectedPresenter.bio && (
-                <div className="p-6">
-                  <h4 className="font-semibold text-sm">Biography</h4>
-                  <p className="mt-1 text-sm text-muted-foreground whitespace-pre-line">
-                    {selectedPresenter.bio}
-                  </p>
-                </div>
+      <Dialog open={isAddPresenterOpen} onOpenChange={setAddPresenterOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>
+              {selectedPresenter ? 'Edit Presenter' : 'Add a New Presenter'}
+            </DialogTitle>
+            <DialogDescription>
+              {selectedPresenter
+                ? 'Update the details for the presenter.'
+                : 'Enter the details for the new presenter.'}
+            </DialogDescription>
+          </DialogHeader>
+          <Form {...form}>
+            <form
+              id="presenter-form"
+              onSubmit={form.handleSubmit(onSubmit)}
+              className="space-y-4"
+            >
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Name</FormLabel>
+                    <FormControl>
+                      <Input placeholder="e.g. Jane Doe" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="affiliation"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Affiliation</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="e.g. Firebase University"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="imageUrl"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Photo URL</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="https://example.com/image.jpg"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="imageHint"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Image Hint</FormLabel>
+                    <FormControl>
+                      <Input placeholder="e.g. woman smiling" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="bio"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Biography</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        placeholder="A short bio about the presenter."
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </form>
+          </Form>
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setAddPresenterOpen(false)}
+              >
+                Cancel
+              </Button>
+            </DialogClose>
+            <Button
+              type="submit"
+              form="presenter-form"
+              disabled={form.formState.isSubmitting}
+            >
+              {form.formState.isSubmitting && (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               )}
-            </>
-          )}
+              {selectedPresenter ? 'Save Changes' : 'Save Presenter'}
+            </Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
     </>

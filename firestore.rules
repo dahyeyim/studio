@@ -114,14 +114,14 @@ service cloud.firestore {
      * @description Manages information about presenters.
      * @path /presenters/{presenterId}
      * @allow (get, list) Any authenticated user can read presenter information.
-     * @allow (create) Any authenticated user can add a new presenter.
-     * @deny (update, delete) Presenter data is considered static and managed by an administrator.
-     * @principle Makes presenter information public while protecting it from client-side modification.
+     * @allow (create, update) Any authenticated user can add or update a presenter.
+     * @deny (delete) Presenter data is considered static and managed by an administrator.
+     * @principle Makes presenter information public while allowing modifications.
      */
     match /presenters/{presenterId} {
       allow get, list: if isSignedIn();
-      allow create: if isSignedIn();
-      allow update, delete: if false;
+      allow create, update: if isSignedIn();
+      allow delete: if false;
     }
   }
 }
