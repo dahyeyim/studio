@@ -38,7 +38,10 @@ export const presentationSchedule: Presentation[] = [
     presenter: 'All Attendees',
     time: '09:15 - 09:20',
     description: '',
-    downloadUrls: null,
+    downloadUrls: {
+      korean: '#',
+      mongolian: '#',
+    },
     isSession: false,
   },
   {
