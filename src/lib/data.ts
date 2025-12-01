@@ -138,3 +138,22 @@ export const presentationSchedule: Presentation[] = [
     isSession: false,
   },
 ];
+
+export const staticPresenters = [
+  {
+    name: 'Kim Min-jun',
+    affiliation: 'Seoul Metropolitan Government',
+    imageUrl:
+      'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxtYW4lMjBwb3J0cmFpdHxlbnwwfHx8fDE3NjM4MDkyNTJ8MA&ixlib=rb-4.1.0&q=80&w=1080',
+    imageHint: 'man portrait',
+    bio: 'Kim Min-jun is a senior urban planner for the Seoul Metropolitan Government. He has led numerous successful urban regeneration projects, transforming old industrial areas into vibrant cultural hubs. His expertise lies in public-private partnerships and the implementation of technology-driven solutions to improve city life. He is a strong advocate for data-informed policy making.',
+  },
+  {
+    name: 'Lee Seo-yeon',
+    affiliation: 'Korea Research Institute for Human Settlements',
+    imageUrl:
+      'https://images.unsplash.com/photo-1494790108377-be9c29b29330?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHx3b21hbiUyMHBvcnRyYWl0fGVufDB8fHx8MTc2Mzc0NTI0MXww&ixlib=rb-4.1.0&q=80&w=1080',
+    imageHint: 'woman portrait',
+    bio: 'Dr. Lee Seo-yeon is a principal researcher at the Korea Research Institute for Human Settlements (KRIHS). Her research focuses on housing policy, smart cities, and international urban development cooperation. She has published extensively on the social impacts of urbanization and has worked as a consultant for various international organizations, including the World Bank and the Asian Development Bank.',
+  },
+];

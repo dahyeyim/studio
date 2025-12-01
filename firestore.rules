@@ -109,5 +109,17 @@ service cloud.firestore {
                       && request.resource.data.sessionId.size() > 0;
       allow update, delete: if isExistingOwner(resource.data.creatorId);
     }
+
+    /**
+     * @description Manages information about presenters.
+     * @path /presenters/{presenterId}
+     * @allow (get, list) Any authenticated user can read presenter information.
+     * @deny (create, update, delete) Presenter data is considered static and managed by an administrator.
+     * @principle Makes presenter information public while protecting it from client-side modification.
+     */
+    match /presenters/{presenterId} {
+      allow get, list: if isSignedIn();
+      allow create, update, delete: if false;
+    }
   }
 }

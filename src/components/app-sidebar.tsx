@@ -9,7 +9,7 @@ import {
   SidebarFooter,
   SidebarMenuSkeleton,
 } from '@/components/ui/sidebar';
-import { ClipboardList, Users, HelpCircle, Home } from 'lucide-react';
+import { ClipboardList, Users, HelpCircle, Home, MicVocal } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { useFirebase, useCollection, useMemoFirebase } from '@/firebase';
@@ -44,6 +44,11 @@ export function AppSidebar() {
       href: '/schedule',
       label: 'Schedule',
       icon: ClipboardList,
+    },
+    {
+      href: '/presenters',
+      label: 'Presenters',
+      icon: MicVocal,
     },
     {
       href: '/attendees',
