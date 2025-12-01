@@ -5,9 +5,7 @@ import Image from 'next/image';
 import {
   Card,
   CardContent,
-  CardFooter,
   CardHeader,
-  CardTitle,
 } from '@/components/ui/card';
 import {
   Dialog,
@@ -15,50 +13,76 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { presenters, type Presenter } from '@/lib/data';
+import { useCollection, useFirebase, useMemoFirebase } from '@/firebase';
+import { collection, query } from 'firebase/firestore';
+import { Loader2 } from 'lucide-react';
+
+interface Presenter {
+  id: string;
+  name: string;
+  affiliation: string;
+  imageUrl: string;
+  imageHint: string;
+  bio: string;
+}
 
 export default function PresentersPage() {
+  const { firestore } = useFirebase();
   const [selectedPresenter, setSelectedPresenter] = useState<Presenter | null>(
     null
   );
 
-  return (
-    <div className="flex flex-1 flex-col p-4 md:p-6">
-      <header className="mb-6">
-        <h1 className="font-headline text-3xl font-semibold tracking-tight">
-          Forum Presenters
-        </h1>
-        <p className="text-muted-foreground">
-          Meet the experts speaking at the forum.
-        </p>
-      </header>
+  const presentersQuery = useMemoFirebase(
+    () => (firestore ? query(collection(firestore, 'presenters')) : null),
+    [firestore]
+  );
+  const { data: presenters, isLoading } = useCollection<Presenter>(presentersQuery);
 
-      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        {presenters.map((presenter) => (
-          <Card
-            key={presenter.id}
-            className="cursor-pointer overflow-hidden transition-all hover:shadow-lg hover:scale-105"
-            onClick={() => setSelectedPresenter(presenter)}
-          >
-            <CardHeader className="p-0">
-              <div className="relative aspect-[4/3] w-full">
-                <Image
-                  src={presenter.imageUrl}
-                  alt={`Portrait of ${presenter.name}`}
-                  fill
-                  className="object-cover"
-                  data-ai-hint={presenter.imageHint}
-                />
-              </div>
-            </CardHeader>
-            <CardContent className="p-4">
-              <h3 className="font-semibold">{presenter.name}</h3>
-              <p className="text-sm text-muted-foreground">
-                {presenter.affiliation}
-              </p>
-            </CardContent>
-          </Card>
-        ))}
+  return (
+    <>
+      <div className="flex flex-1 flex-col p-4 md:p-6">
+        <header className="mb-6">
+          <h1 className="font-headline text-3xl font-semibold tracking-tight">
+            Forum Presenters
+          </h1>
+          <p className="text-muted-foreground">
+            Meet the experts speaking at the forum.
+          </p>
+        </header>
+
+        {isLoading ? (
+          <div className="flex flex-1 items-center justify-center">
+            <Loader2 className="h-8 w-8 animate-spin" />
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {presenters?.map((presenter) => (
+              <Card
+                key={presenter.id}
+                className="cursor-pointer overflow-hidden transition-all hover:shadow-lg hover:scale-105"
+                onClick={() => setSelectedPresenter(presenter)}
+              >
+                <CardHeader className="p-0">
+                  <div className="relative aspect-[4/3] w-full">
+                    <Image
+                      src={presenter.imageUrl}
+                      alt={`Portrait of ${presenter.name}`}
+                      fill
+                      className="object-cover"
+                      data-ai-hint={presenter.imageHint}
+                    />
+                  </div>
+                </CardHeader>
+                <CardContent className="p-4">
+                  <h3 className="font-semibold">{presenter.name}</h3>
+                  <p className="text-sm text-muted-foreground">
+                    {presenter.affiliation}
+                  </p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        )}
       </div>
 
       <Dialog
@@ -97,6 +121,6 @@ export default function PresentersPage() {
           )}
         </DialogContent>
       </Dialog>
-    </div>
+    </>
   );
 }
