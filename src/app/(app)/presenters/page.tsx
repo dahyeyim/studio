@@ -49,22 +49,24 @@ export default function PresentersPage() {
   const { data: presenters, isLoading: isLoadingPresenters } =
     useCollection<Presenter>(presentersQuery);
 
-  const [isSeeding, setIsSeeding] = useState(true);
+  const [isSeeding, setIsSeeding] = useState(false);
 
   useEffect(() => {
     const seedData = async () => {
       if (!firestore) return;
 
+      // Use a flag in sessionStorage to ensure this runs only once per session
       if (sessionStorage.getItem('presentersSeeded')) {
         setIsSeeding(false);
         return;
       }
-
+      
       setIsSeeding(true);
       try {
         const presentersCollection = collection(firestore, 'presenters');
         const snapshot = await getDocs(presentersCollection);
-
+        
+        // Only seed if the collection is empty
         if (snapshot.empty) {
           const addBatch = writeBatch(firestore);
           staticPresenters.forEach((presenter) => {
@@ -73,7 +75,8 @@ export default function PresentersPage() {
           });
           await addBatch.commit();
         }
-        
+
+        // Set flag after seeding
         sessionStorage.setItem('presentersSeeded', 'true');
       } catch (error) {
         console.error('Error seeding presenters data:', error);
