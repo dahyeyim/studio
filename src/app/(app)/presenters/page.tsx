@@ -1,11 +1,10 @@
 'use client';
 
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
@@ -17,8 +16,19 @@ import {
   DialogDescription,
 } from '@/components/ui/dialog';
 import { Loader2 } from 'lucide-react';
-import { useCollection, useFirebase, useMemoFirebase } from '@/firebase';
-import { collection, getDocs, writeBatch, query } from 'firebase/firestore';
+import {
+  useCollection,
+  useFirebase,
+  useMemoFirebase,
+} from '@/firebase';
+import {
+  collection,
+  getDocs,
+  writeBatch,
+  query,
+  doc,
+  deleteDoc,
+} from 'firebase/firestore';
 import Image from 'next/image';
 import { staticPresenters } from '@/lib/data';
 
@@ -50,35 +60,37 @@ export default function PresentersPage() {
     const seedData = async () => {
       if (!firestore) return;
 
-      // Check if seeding has already been done in this session
       if (sessionStorage.getItem('presentersSeeded')) {
         setIsSeeding(false);
         return;
       }
 
+      setIsSeeding(true);
       const presentersCollection = collection(firestore, 'presenters');
       const snapshot = await getDocs(presentersCollection);
 
-      if (snapshot.empty) {
-        console.log('Presenters collection is empty. Seeding data...');
-        const batch = writeBatch(firestore);
-        staticPresenters.forEach((presenter) => {
-          const docRef = collection(firestore, 'presenters');
-          // Firestore will auto-generate an ID when using addDoc with a batch
-          batch.set(docRef.doc(), presenter);
+      // Clear existing data first
+      if (!snapshot.empty) {
+        const deleteBatch = writeBatch(firestore);
+        snapshot.docs.forEach((docSnapshot) => {
+          deleteBatch.delete(doc(firestore, 'presenters', docSnapshot.id));
         });
-        await batch.commit();
-        console.log('Seeding complete.');
-      } else {
-        console.log('Presenters collection already has data.');
+        await deleteBatch.commit();
       }
-      
-      // Mark seeding as done for this session
+
+      // Seed with new data
+      const addBatch = writeBatch(firestore);
+      staticPresenters.forEach((presenter) => {
+        const docRef = doc(collection(firestore, 'presenters'));
+        addBatch.set(docRef, presenter);
+      });
+      await addBatch.commit();
+
       sessionStorage.setItem('presentersSeeded', 'true');
       setIsSeeding(false);
     };
 
-    seedData();
+    seedData().catch(console.error);
   }, [firestore]);
 
   const isLoading = isLoadingPresenters || isSeeding;
@@ -135,10 +147,10 @@ export default function PresentersPage() {
         open={!!selectedPresenter}
         onOpenChange={(isOpen) => !isOpen && setSelectedPresenter(null)}
       >
-        <DialogContent className="max-w-sm p-0 sm:max-w-md">
+        <DialogContent className="sm:max-w-md p-0">
           {selectedPresenter && (
             <>
-              <div className="relative aspect-[4/3]">
+              <div className="relative aspect-square sm:aspect-[4/3]">
                 <Image
                   src={selectedPresenter.imageUrl}
                   alt={`Portrait of ${selectedPresenter.name}`}
@@ -146,25 +158,25 @@ export default function PresentersPage() {
                   className="object-cover"
                   data-ai-hint={selectedPresenter.imageHint}
                 />
+                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+                 <div className="absolute bottom-0 w-full p-6 text-white">
+                    <DialogTitle className="text-2xl font-bold text-primary-foreground">
+                      {selectedPresenter.name}
+                    </DialogTitle>
+                    <DialogDescription className="text-primary-foreground/90">
+                      {selectedPresenter.affiliation}
+                    </DialogDescription>
+                 </div>
               </div>
-              <div className="p-6">
-                <DialogHeader className="text-left">
-                  <DialogTitle className="text-2xl font-bold">
-                    {selectedPresenter.name}
-                  </DialogTitle>
-                  <DialogDescription>
-                    {selectedPresenter.affiliation}
-                  </DialogDescription>
-                </DialogHeader>
-                {selectedPresenter.bio && (
-                  <div className="mt-4 space-y-2">
+              
+              {selectedPresenter.bio && (
+                <div className="p-6">
                     <h4 className="font-semibold text-sm">Biography</h4>
-                    <p className="text-sm text-muted-foreground whitespace-pre-line">
+                    <p className="mt-1 text-sm text-muted-foreground whitespace-pre-line">
                       {selectedPresenter.bio}
                     </p>
-                  </div>
-                )}
-              </div>
+                </div>
+              )}
             </>
           )}
         </DialogContent>
