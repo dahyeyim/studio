@@ -17,7 +17,6 @@ import {
   DialogHeader,
   DialogTitle,
   DialogDescription,
-  DialogTrigger,
   DialogFooter,
   DialogClose,
 } from '@/components/ui/dialog';
@@ -53,7 +52,6 @@ interface Presenter {
   affiliation: string;
   bio?: string;
   imageUrl: string;
-  imageHint?: string;
 }
 
 const formSchema = z.object({
@@ -79,7 +77,7 @@ export default function PresentersPage() {
     defaultValues: {
       name: '',
       affiliation: '',
-      imageUrl: '',
+      imageUrl: undefined,
       bio: '',
     },
   });
@@ -132,7 +130,7 @@ export default function PresentersPage() {
       form.reset({
         name: '',
         affiliation: '',
-        imageUrl: '',
+        imageUrl: undefined,
         bio: '',
       });
     }
@@ -226,13 +224,14 @@ export default function PresentersPage() {
                 className="group cursor-pointer overflow-hidden"
               >
                 <div className="relative aspect-[4/5] overflow-hidden">
-                  <Image
-                    src={presenter.imageUrl}
-                    alt={`Portrait of ${presenter.name}`}
-                    fill
-                    className="object-cover transition-transform duration-300 group-hover:scale-105"
-                    data-ai-hint={presenter.imageHint}
-                  />
+                  {presenter.imageUrl && (
+                    <Image
+                      src={presenter.imageUrl}
+                      alt={`Portrait of ${presenter.name}`}
+                      fill
+                      className="object-cover transition-transform duration-300 group-hover:scale-105"
+                    />
+                  )}
                 </div>
                 <CardHeader>
                   <CardTitle className="text-lg">{presenter.name}</CardTitle>
