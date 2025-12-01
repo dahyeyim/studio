@@ -138,38 +138,3 @@ export const presentationSchedule: Presentation[] = [
     isSession: false,
   },
 ];
-
-export const staticPresenters = [
-  {
-    name: 'B.Ariunjargalan',
-    affiliation: 'National Institute for Regional and Urban Development',
-    imageUrl:
-      'https://images.unsplash.com/photo-1494790108377-be9c29b29330?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHx3b21hbiUyMHBvcnRyYWl0fGVufDB8fHx8MTc2Mzc0NTI0MXww&ixlib=rb-4.1.0&q=80&w=1080',
-    imageHint: 'woman portrait',
-    bio: 'B. Ariunjargalan is a leading researcher at the National Institute for Regional and Urban Development, specializing in sustainable urban planning and infrastructure. With over 15 years of experience, she has been instrumental in shaping policies for smart city development in Mongolia. Her work focuses on integrating green technologies and community-centric designs into modern urban environments.',
-  },
-  {
-    name: 'Kim Min-jun',
-    affiliation: 'Seoul Metropolitan Government',
-    imageUrl:
-      'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxtYW4lMjBwb3J0cmFpdHxlbnwwfHx8fDE3NjM4MDkyNTJ8MA&ixlib=rb-4.1.0&q=80&w=1080',
-    imageHint: 'man portrait',
-    bio: 'Kim Min-jun is a senior urban planner for the Seoul Metropolitan Government. He has led numerous successful urban regeneration projects, transforming old industrial areas into vibrant cultural hubs. His expertise lies in public-private partnerships and the implementation of technology-driven solutions to improve city life. He is a strong advocate for data-informed policy making.',
-  },
-  {
-    name: 'Lee Seo-yeon',
-    affiliation: 'Korea Research Institute for Human Settlements',
-    imageUrl:
-      'https://images.unsplash.com/photo-1580489944761-15a19d654956?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHx3b21hbiUyMHNtaWxpbmd8ZW58MHx8fHwxNzYzODE0MjEwfDA&ixlib=rb-4.1.0&q=80&w=1080',
-    imageHint: 'woman smiling',
-    bio: 'Dr. Lee Seo-yeon is a principal researcher at the Korea Research Institute for Human Settlements (KRIHS). Her research focuses on housing policy, smart cities, and international urban development cooperation. She has published extensively on the social impacts of urbanization and has worked as a consultant for various international organizations, including the World Bank and the Asian Development Bank.',
-  },
-  {
-    name: 'Gantulga Batbold',
-    affiliation: 'Ulaanbaatar City Municipality',
-    imageUrl:
-      'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxtYW4lMjBzbWlsaW5nfGVufDB8fHx8MTc2MzczMTA1MXww&ixlib=rb-4.1.0&q=80&w=1080',
-    imageHint: 'man smiling',
-    bio: "Gantulga Batbold serves as the head of the Urban Planning Department for the Ulaanbaatar City Municipality. He is responsible for overseeing the city's master plan and guiding its development to address challenges like traffic congestion and air pollution. He is passionate about creating a more livable and sustainable capital city for the citizens of Mongolia.",
-  },
-];

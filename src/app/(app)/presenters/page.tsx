@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Image from 'next/image';
 import {
   Card,
@@ -14,9 +14,8 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { useCollection, useFirebase, useMemoFirebase } from '@/firebase';
-import { collection, query, writeBatch, doc } from 'firebase/firestore';
+import { collection, query } from 'firebase/firestore';
 import { Loader2 } from 'lucide-react';
-import { staticPresenters } from '@/lib/data';
 
 interface Presenter {
   id: string;
@@ -38,31 +37,6 @@ export default function PresentersPage() {
     [firestore]
   );
   const { data: presenters, isLoading } = useCollection<Presenter>(presentersQuery);
-  
-  // This effect will run once to seed the database if it's empty.
-  useEffect(() => {
-    if (firestore && presenters !== null && presenters.length === 0) {
-      const seedDatabase = async () => {
-        try {
-          const batch = writeBatch(firestore);
-          const presentersCollection = collection(firestore, 'presenters');
-          
-          staticPresenters.forEach(presenter => {
-            const docRef = doc(presentersCollection); // Create a new doc with auto-generated ID
-            batch.set(docRef, presenter);
-          });
-
-          await batch.commit();
-          console.log('Presenters collection has been seeded.');
-        } catch (error) {
-          console.error('Error seeding presenters collection:', error);
-        }
-      };
-
-      seedDatabase();
-    }
-  }, [firestore, presenters]);
-
 
   return (
     <>
