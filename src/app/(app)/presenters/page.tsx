@@ -2,11 +2,7 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
-import {
-  Card,
-  CardContent,
-  CardHeader,
-} from '@/components/ui/card';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import {
   Dialog,
   DialogContent,
@@ -36,7 +32,8 @@ export default function PresentersPage() {
     () => (firestore ? query(collection(firestore, 'presenters')) : null),
     [firestore]
   );
-  const { data: presenters, isLoading } = useCollection<Presenter>(presentersQuery);
+  const { data: presenters, isLoading } =
+    useCollection<Presenter>(presentersQuery);
 
   return (
     <>
@@ -59,11 +56,11 @@ export default function PresentersPage() {
             {presenters?.map((presenter) => (
               <Card
                 key={presenter.id}
-                className="cursor-pointer overflow-hidden transition-all hover:shadow-lg hover:scale-105"
+                className="cursor-pointer overflow-hidden transition-all hover:shadow-lg hover:scale-105 group"
                 onClick={() => setSelectedPresenter(presenter)}
               >
                 <CardHeader className="p-0">
-                  <div className="relative aspect-[4/3] w-full">
+                  <div className="relative aspect-[3/4] w-full">
                     <Image
                       src={presenter.imageUrl}
                       alt={`Portrait of ${presenter.name}`}
@@ -71,14 +68,17 @@ export default function PresentersPage() {
                       className="object-cover"
                       data-ai-hint={presenter.imageHint}
                     />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+                    <div className="absolute bottom-0 left-0 right-0 p-4">
+                      <h3 className="font-semibold text-white">
+                        {presenter.name}
+                      </h3>
+                      <p className="text-sm text-white/80">
+                        {presenter.affiliation}
+                      </p>
+                    </div>
                   </div>
                 </CardHeader>
-                <CardContent className="p-4">
-                  <h3 className="font-semibold">{presenter.name}</h3>
-                  <p className="text-sm text-muted-foreground">
-                    {presenter.affiliation}
-                  </p>
-                </CardContent>
               </Card>
             ))}
           </div>
