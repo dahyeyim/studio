@@ -1,3 +1,4 @@
+
 'use client';
 
 import { Button } from '@/components/ui/button';
@@ -9,7 +10,7 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { presentationSchedule } from '@/lib/data';
-import { Clock, Download, User, HelpCircle } from 'lucide-react';
+import { Clock, Download, User, HelpCircle, Dot } from 'lucide-react';
 import Link from 'next/link';
 
 export default function SchedulePage() {
@@ -31,10 +32,12 @@ export default function SchedulePage() {
                 {item.title}
               </CardTitle>
               <div className="flex flex-wrap items-center gap-x-4 gap-y-1 pt-2 text-sm text-muted-foreground">
-                <div className="flex items-center gap-2">
-                  <User className="h-4 w-4" />
-                  <span>{item.presenter}</span>
-                </div>
+                {item.presenter && (
+                  <div className="flex items-center gap-2">
+                    <User className="h-4 w-4" />
+                    <span>{item.presenter}</span>
+                  </div>
+                )}
                 <div className="flex items-center gap-2">
                   <Clock className="h-4 w-4" />
                   <span>{item.time}</span>
@@ -42,36 +45,48 @@ export default function SchedulePage() {
               </div>
             </CardHeader>
             <CardContent className="p-6 text-sm text-foreground/80">
-              <p>{item.description}</p>
+              {item.description && <p className="mb-4">{item.description}</p>}
+              {item.details && item.details.length > 0 && (
+                <ul className="space-y-2">
+                  {item.details.map((detail, index) => (
+                    <li key={index} className="flex items-center gap-2">
+                      <Dot className="h-4 w-4 text-muted-foreground" />
+                      <span>{detail}</span>
+                    </li>
+                  ))}
+                </ul>
+              )}
             </CardContent>
-            <CardFooter className="flex flex-wrap gap-2 bg-card-foreground/5">
-              {item.downloadUrls?.korean && (
-                <Button variant="outline" asChild>
-                  <a href={item.downloadUrls.korean} download>
-                    <Download className="mr-2 h-4 w-4" />
-                    Download Materials (KR)
-                  </a>
-                </Button>
-              )}
-              {item.downloadUrls?.mongolian && (
-                <Button variant="outline" asChild>
-                  <a href={item.downloadUrls.mongolian} download>
-                    <Download className="mr-2 h-4 w-4" />
-                    Download Materials (MN)
-                  </a>
-                </Button>
-              )}
-              {item.isSession && (
-                <Button asChild>
-                  <Link
-                    href={`/questions?sessionId=${item.id}&topic=${encodeURIComponent(item.title)}`}
-                  >
-                    <HelpCircle className="mr-2 h-4 w-4" />
-                    Go to Q&amp;A
-                  </Link>
-                </Button>
-              )}
-            </CardFooter>
+            {(item.downloadUrls || item.isSession) && (
+              <CardFooter className="flex flex-wrap gap-2 bg-card-foreground/5">
+                {item.downloadUrls?.korean && (
+                  <Button variant="outline" asChild>
+                    <a href={item.downloadUrls.korean} download>
+                      <Download className="mr-2 h-4 w-4" />
+                      Download Materials (KR)
+                    </a>
+                  </Button>
+                )}
+                {item.downloadUrls?.mongolian && (
+                  <Button variant="outline" asChild>
+                    <a href={item.downloadUrls.mongolian} download>
+                      <Download className="mr-2 h-4 w-4" />
+                      Download Materials (MN)
+                    </a>
+                  </Button>
+                )}
+                {item.isSession && item.id !== 'p4' && item.id !== 'p11' && (
+                  <Button asChild>
+                    <Link
+                      href={`/questions?sessionId=${item.id}&topic=${encodeURIComponent(item.title)}`}
+                    >
+                      <HelpCircle className="mr-2 h-4 w-4" />
+                      Go to Q&amp;A
+                    </Link>
+                  </Button>
+                )}
+              </CardFooter>
+            )}
           </Card>
         ))}
       </div>
