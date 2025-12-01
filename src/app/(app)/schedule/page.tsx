@@ -57,8 +57,16 @@ export default function SchedulePage() {
                 </ul>
               )}
             </CardContent>
-            {(item.downloadUrls || item.isSession) && (
+            {(item.downloadUrls || item.downloadUrl || item.isSession) && (
               <CardFooter className="flex flex-wrap gap-2 bg-card-foreground/5">
+                {item.downloadUrl && (
+                  <Button variant="outline" asChild>
+                    <a href={item.downloadUrl} download>
+                      <Download className="mr-2 h-4 w-4" />
+                      Download
+                    </a>
+                  </Button>
+                )}
                 {item.downloadUrls?.korean && (
                   <Button variant="outline" asChild>
                     <a href={item.downloadUrls.korean} download>

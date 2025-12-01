@@ -5,10 +5,11 @@ export interface Presentation {
   presenter: string;
   time: string;
   description: string;
-  downloadUrls: {
+  downloadUrls?: {
     korean: string | null;
     mongolian: string | null;
   } | null;
+  downloadUrl?: string | null; // For single download button
   isSession: boolean;
   details?: string[];
 }
@@ -38,10 +39,7 @@ export const presentationSchedule: Presentation[] = [
     presenter: 'All Attendees',
     time: '09:15 - 09:20',
     description: '',
-    downloadUrls: {
-      korean: '#',
-      mongolian: '#',
-    },
+    downloadUrl: '#',
     isSession: false,
   },
   {
