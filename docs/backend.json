@@ -79,36 +79,6 @@
         "attendeeName",
         "attendeeAffiliation"
       ]
-    },
-    "Presenter": {
-      "$schema": "http://json-schema.org/draft-07/schema#",
-      "title": "Presenter",
-      "type": "object",
-      "description": "Represents a presenter at the seminar.",
-      "properties": {
-        "name": {
-          "type": "string",
-          "description": "The full name of the presenter."
-        },
-        "affiliation": {
-          "type": "string",
-          "description": "The presenter's affiliation (e.g., company, university)."
-        },
-        "imageUrl": {
-          "type": "string",
-          "format": "uri",
-          "description": "URL of the presenter's profile picture."
-        },
-        "imageHint": {
-          "type": "string",
-          "description": "A hint for AI to find a relevant image if the primary one is unavailable."
-        },
-        "bio": {
-          "type": "string",
-          "description": "A short biography of the presenter."
-        }
-      },
-      "required": ["name", "affiliation", "imageUrl", "bio"]
     }
   },
   "auth": {
@@ -128,12 +98,6 @@
         "$ref": "#/entities/Question"
       },
       "description": "Stores questions submitted by attendees."
-    },
-    "/presenters/{presenterId}": {
-      "schema": {
-        "$ref": "#/entities/Presenter"
-      },
-      "description": "Stores information about the seminar presenters."
     }
   }
 }

@@ -12,7 +12,6 @@
  * Data Structure:
  * The data is organized into several flat, top-level collections:
  * - /attendees: Stores a list of seminar participants.
- * - /presenters: Stores information about the seminar presenters.
  * - /presentation_orders: Stores the schedule and order of presentations.
  * - /presentation_materials: Contains links to presentation slides and materials.
  * - /questions: A collection of questions submitted by attendees for presenters.
@@ -24,7 +23,7 @@
  * - Public Read, Owner-Only Create: Collections like `/attendees` and `/questions`
  *   are readable by all authenticated users, but writes are strictly limited to the
  *   document's owner to prevent data tampering.
- * - Read-Only Reference Data: Collections like `/presenters`, `/presentation_orders` and
+ * - Read-Only Reference Data: Collections like `/presentation_orders` and
  *   `/presentation_materials` are treated as read-only for clients, assuming they
  *   are managed by a trusted backend process or administrator.
  *
@@ -95,18 +94,6 @@ service cloud.firestore {
       allow update, delete: if false;
     }
     
-    /**
-     * @description Manages the list of seminar presenters.
-     * @path /presenters/{presenterId}
-     * @allow (get, list) Any authenticated user can read the list of presenters.
-     * @deny (create, update, delete) No user can modify presenter information. This is managed from the console.
-     * @principle Makes presenter information public read-only for all users.
-     */
-    match /presenters/{presenterId} {
-      allow get, list: if isSignedIn();
-      allow create, update, delete: if false;
-    }
-
     /**
      * @description Manages questions submitted by attendees during the seminar.
      * @path /questions/{questionId}
