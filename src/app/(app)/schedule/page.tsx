@@ -28,7 +28,7 @@ export default function SchedulePage() {
         {presentationSchedule.map((item) => (
           <Card
             key={item.id}
-            className={`overflow-hidden ${item.isSession ? 'bg-card-foreground/5' : 'bg-muted'}`}
+            className={`overflow-hidden ${item.isSession ? 'bg-muted' : 'bg-card-foreground/5'}`}
           >
             <CardHeader>
               <CardTitle className="font-headline text-xl">
