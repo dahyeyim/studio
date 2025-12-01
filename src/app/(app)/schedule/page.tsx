@@ -26,8 +26,11 @@ export default function SchedulePage() {
       </header>
       <div className="space-y-6">
         {presentationSchedule.map((item) => (
-          <Card key={item.id} className="overflow-hidden">
-            <CardHeader className="bg-card-foreground/5">
+          <Card
+            key={item.id}
+            className={`overflow-hidden ${!item.isSession ? 'bg-card-foreground/5' : ''}`}
+          >
+            <CardHeader>
               <CardTitle className="font-headline text-xl">
                 {item.title}
               </CardTitle>
@@ -58,7 +61,7 @@ export default function SchedulePage() {
               )}
             </CardContent>
             {(item.downloadUrls || item.downloadUrl || item.isSession) && (
-              <CardFooter className="flex flex-wrap gap-2 bg-card-foreground/5">
+              <CardFooter className="flex flex-wrap gap-2">
                 {item.downloadUrl && (
                   <Button variant="outline" asChild>
                     <a href={item.downloadUrl} download>
