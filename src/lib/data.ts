@@ -47,7 +47,10 @@ export const presentationSchedule: Presentation[] = [
     presenter: '',
     time: '09:20 - 09:35',
     description: 'Presentation: Mongolia (15 min)',
-    downloadUrls: null,
+    downloadUrls: {
+      korean: '#',
+      mongolian: '#',
+    },
     isSession: true,
   },
   {
@@ -55,7 +58,7 @@ export const presentationSchedule: Presentation[] = [
     title: 'KHARKHORUM CITY',
     presenter: 'Mongolia & Korea Presentations',
     time: '09:40 - 11:10',
-    description: 'Presentations (20 min), Discussion (50 min), Q&A (20 min)',
+    description: '',
     downloadUrls: {
       korean:
         'https://drive.google.com/file/d/16mdkg3Ehn-lYLBI3QH4d--pn1fTQb0kw/view?usp=drive_link',
@@ -84,7 +87,7 @@ export const presentationSchedule: Presentation[] = [
     title: 'THE 14 SUB-CITIES OF ULAANBAATAR',
     presenter: 'Mongolia Presentation',
     time: '11:40 - 13:00',
-    description: 'Presentation (10 min), Discussion (50 min), Q&A (20 min)',
+    description: '',
     downloadUrls: {
       korean: '/downloads/session2-korean.pdf',
       mongolian: '/downloads/session2-mongolian.pdf',
@@ -106,7 +109,7 @@ export const presentationSchedule: Presentation[] = [
     title: 'HUNNU CITY',
     presenter: 'Mongolia & Korea Presentations',
     time: '14:40 - 16:10',
-    description: 'Presentations (20 min), Discussion (50 min), Q&A (20 min)',
+    description: '',
     downloadUrls: {
       korean:
         'https://drive.google.com/file/d/1uLV1Wdum8v4haoYGhTEsWMqD1RGdwaIB/view?usp=drive_link',
