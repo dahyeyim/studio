@@ -123,5 +123,17 @@ service cloud.firestore {
       allow create, update: if isSignedIn();
       allow delete: if false;
     }
+
+    /**
+     * @description Manages the seminar schedule.
+     * @path /schedules/{scheduleId}
+     * @allow (get, list) Any authenticated user can read the schedule.
+     * @allow (create, update, delete) Any authenticated user can manage schedule items.
+     * @principle Allows content to be managed dynamically by authenticated users.
+     */
+    match /schedules/{scheduleId} {
+      allow get, list: if isSignedIn();
+      allow create, update, delete: if isSignedIn();
+    }
   }
 }

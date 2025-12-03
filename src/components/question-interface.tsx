@@ -5,7 +5,7 @@ import { useForm, type SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useFormState, useFormStatus } from 'react-dom';
-import { collection, query, where, getDocs } from 'firebase/firestore';
+import { collection, query, where, getDocs, orderBy } from 'firebase/firestore';
 
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -43,7 +43,8 @@ import { Alert, AlertDescription, AlertTitle } from './ui/alert';
 import { useCollection, useFirebase, useMemoFirebase } from '@/firebase';
 import { addDocumentNonBlocking } from '@/firebase/non-blocking-updates';
 import { useToast } from '@/hooks/use-toast';
-import { presentationSchedule } from '@/lib/data';
+import type { ScheduleItem } from '@/app/(app)/schedule/page';
+
 
 const formSchema = z.object({
   question: z
@@ -107,6 +108,12 @@ export function QuestionInterface({
   );
   const { data: allQuestions, isLoading: isLoadingQuestions } =
     useCollection<Question>(questionsQuery);
+    
+  const scheduleQuery = useMemoFirebase(
+    () => (firestore ? query(collection(firestore, 'schedules'), orderBy('order')) : null),
+    [firestore]
+  );
+  const { data: schedule } = useCollection<ScheduleItem>(scheduleQuery);
 
   const [state, formAction] = useFormState(
     getPrioritizedQuestions,
@@ -191,7 +198,7 @@ export function QuestionInterface({
   }, [allQuestions]);
 
   const getSessionTopic = (sessionId: string) => {
-    const session = presentationSchedule.find((s) => s.id === sessionId);
+    const session = schedule?.find((s) => s.id === sessionId);
     return session ? session.title : 'Unknown Session';
   };
   
@@ -204,11 +211,12 @@ export function QuestionInterface({
   }, [allQuestions]);
 
   const sortedSessionIds = useMemo(() => {
+    if (!schedule) return [];
     const sessionIdsFromQuestions = Object.keys(questionsBySession);
-    return presentationSchedule
+    return schedule
       .map(s => s.id)
       .filter(id => sessionIdsFromQuestions.includes(id));
-  }, [questionsBySession]);
+  }, [questionsBySession, schedule]);
 
 
   return (

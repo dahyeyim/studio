@@ -108,6 +108,58 @@
         }
       },
       "required": ["name", "affiliation", "imageUrl"]
+    },
+    "ScheduleItem": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Schedule Item",
+      "type": "object",
+      "description": "Represents a single item in the seminar schedule.",
+      "properties": {
+        "order": {
+          "type": "number",
+          "description": "The display order of the schedule item."
+        },
+        "title": {
+          "type": "string",
+          "description": "The title of the schedule item."
+        },
+        "presenter": {
+          "type": "string",
+          "description": "The name of the presenter(s) for this item."
+        },
+        "time": {
+          "type": "string",
+          "description": "The time slot for this schedule item (e.g., '09:00 - 09:15')."
+        },
+        "description": {
+          "type": "string",
+          "description": "A brief description of the schedule item."
+        },
+        "downloadUrl": {
+          "type": "string",
+          "description": "A general URL for downloadable materials."
+        },
+        "downloadUrlKorean": {
+          "type": "string",
+          "description": "A URL for Korean downloadable materials."
+        },
+        "downloadUrlMongolian": {
+          "type": "string",
+          "description": "A URL for Mongolian downloadable materials."
+        },
+        "isSession": {
+          "type": "boolean",
+          "description": "Indicates if this item is a presentation session eligible for Q&A."
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "A list of detailed points about the session."
+        }
+      },
+      "required": ["order", "title", "time", "isSession"]
     }
   },
   "auth": {
@@ -133,6 +185,12 @@
         "$ref": "#/entities/Presenter"
       },
       "description": "Stores information about the presenters."
+    },
+    "/schedules/{scheduleId}": {
+      "schema": {
+        "$ref": "#/entities/ScheduleItem"
+      },
+      "description": "Stores the seminar schedule."
     }
   }
 }

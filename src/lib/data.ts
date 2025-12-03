@@ -1,4 +1,5 @@
 
+
 export interface Presentation {
   id: string;
   title: string;
@@ -14,26 +15,28 @@ export interface Presentation {
   details?: string[];
 }
 
-export const presentationSchedule: Presentation[] = [
+// This is now used as a fallback for seeding the database
+export const staticSchedule = [
   {
+    order: 1,
     id: 'p1',
     title: 'REGISTRATION',
     presenter: 'Drink and snack will be served',
     time: '08:30 - 08:50',
     description: '',
-    downloadUrls: null,
     isSession: false,
   },
   {
+    order: 2,
     id: 'p2',
     title: 'Opening Remarks',
     presenter: 'Executive Director of NIRD / Country Director, KOICA Mongolia office',
     time: '09:00 - 09:15',
     description: '',
-    downloadUrls: null,
     isSession: false,
   },
   {
+    order: 3,
     id: 'p3',
     title: 'Group Photo',
     presenter: 'All Attendees',
@@ -43,29 +46,27 @@ export const presentationSchedule: Presentation[] = [
     isSession: false,
   },
   {
+    order: 4,
     id: 'p4',
     title: 'REGIONAL DEVELOPMENT & URBAN DEVELOPMENT',
     presenter: '',
     time: '09:20 - 09:35',
     description: 'Presentation: Mongolia (15 min)',
-    downloadUrls: {
-      korean: '#',
-      mongolian: '#',
-    },
+    downloadUrlKorean: '#',
+    downloadUrlMongolian: '#',
     isSession: true,
   },
   {
+    order: 5,
     id: 'p5',
     title: 'KHARKHORUM CITY',
     presenter: 'Mongolia & Korea Presentations',
     time: '09:40 - 11:10',
     description: '',
-    downloadUrls: {
-      korean:
+    downloadUrlKorean:
         'https://drive.google.com/file/d/16mdkg3Ehn-lYLBI3QH4d--pn1fTQb0kw/view?usp=drive_link',
-      mongolian:
+    downloadUrlMongolian:
         'https://drive.google.com/file/d/1CLFNBFG1Lur3QAtsjM80PINqA5yJljLi/view?usp=drive_link',
-    },
     isSession: true,
     details: [
       'Presentation: Mongolia (10 min)',
@@ -75,48 +76,46 @@ export const presentationSchedule: Presentation[] = [
     ],
   },
   {
+    order: 6,
     id: 'p6',
     title: 'Coffee Break',
     presenter: 'All Attendees',
     time: '11:10 - 11:40',
     description: '',
-    downloadUrls: null,
     isSession: false,
   },
   {
+    order: 7,
     id: 'p7',
     title: 'THE 14 SUB-CITIES OF ULAANBAATAR',
     presenter: 'Mongolia Presentation',
     time: '11:40 - 13:00',
     description: '',
-    downloadUrls: {
-      korean: '/downloads/session2-korean.pdf',
-      mongolian: '/downloads/session2-mongolian.pdf',
-    },
+    downloadUrlKorean: '/downloads/session2-korean.pdf',
+    downloadUrlMongolian: '/downloads/session2-mongolian.pdf',
     isSession: true,
     details: ['Presentation: 10 min', 'Discussion: 50 min', 'Q&A: 20 min'],
   },
   {
+    order: 8,
     id: 'p8',
     title: 'Lunch',
     presenter: 'All Attendees',
     time: '13:00 - 14:30',
     description: '',
-    downloadUrls: null,
     isSession: false,
   },
   {
+    order: 9,
     id: 'p9',
     title: 'HUNNU CITY',
     presenter: 'Mongolia & Korea Presentations',
     time: '14:40 - 16:10',
     description: '',
-    downloadUrls: {
-      korean:
+    downloadUrlKorean:
         'https://drive.google.com/file/d/1uLV1Wdum8v4haoYGhTEsWMqD1RGdwaIB/view?usp=drive_link',
-      mongolian:
+    downloadUrlMongolian:
         'https://drive.google.com/file/d/1gmCzOrcdMjkTcputlP1jBEEy-KobBp-9/view?usp=drive_link',
-    },
     isSession: true,
     details: [
       'Presentation: Mongolia (10 min)',
@@ -126,31 +125,31 @@ export const presentationSchedule: Presentation[] = [
     ],
   },
   {
+    order: 10,
     id: 'p10',
     title: 'Presentation: Design studio proposals for Hunnu City',
     presenter: 'Mongolian and Korean graduate students',
     time: '16:10 - 16:30',
     description: '',
-    downloadUrls: null,
     isSession: false,
   },
   {
+    order: 11,
     id: 'p11',
     title:
       'CONCLUSION: REGIONAL DEVELOPMENT & URBAN DEVELOPMENT OF MONGOLIA',
     presenter: 'All Speakers',
     time: '16:30 - 17:00',
     description: 'Discussion (30 min)',
-    downloadUrls: null,
     isSession: true,
   },
   {
+    order: 12,
     id: 'p12',
     title: 'CLOSING SESSION',
     presenter: 'All Attendees',
     time: '17:00',
     description: '',
-    downloadUrls: null,
     isSession: false,
   },
 ];
