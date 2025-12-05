@@ -147,7 +147,7 @@ export default function RegistrationPage() {
                     <FormLabel>Affiliation (Institution)</FormLabel>
                     <FormControl>
                       <Input
-                        placeholder="e.g. Firebase University"
+                        placeholder="OOO University, OOO Institution"
                         {...field}
                       />
                     </FormControl>
