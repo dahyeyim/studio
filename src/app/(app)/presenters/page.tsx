@@ -64,7 +64,8 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
-const transformGsUrl = (url?: string): string | undefined => {
+const transformGsUrl = (url?: string): string => {
+  if (!url) return '';
   if (url && url.startsWith('gs://')) {
     const bucketAndPath = url.substring(5);
     const [bucket, ...pathParts] = bucketAndPath.split('/');
@@ -178,9 +179,9 @@ export default function PresentersPage() {
       });
       return;
     }
-
+  
     const processedData = { ...data, imageUrl: transformGsUrl(data.imageUrl) };
-
+  
     try {
       if (selectedPresenter) {
         // Update existing presenter
