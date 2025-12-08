@@ -58,13 +58,13 @@ interface Presenter {
 const formSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters.'),
   affiliation: z.string().min(2, 'Affiliation must be at least 2 characters.'),
-  imageUrl: z.string().url('Please enter a valid URL for the image.').optional().or(z.literal('')),
+  imageUrl: z.string().url('Please enter a valid URL.').optional().or(z.literal('')),
   bio: z.string().optional(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
 
-const transformGsUrl = (url: string | undefined): string | undefined => {
+const transformGsUrl = (url?: string): string | undefined => {
   if (url && url.startsWith('gs://')) {
     const bucketAndPath = url.substring(5);
     const [bucket, ...pathParts] = bucketAndPath.split('/');
