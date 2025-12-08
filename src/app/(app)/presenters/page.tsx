@@ -159,12 +159,6 @@ export default function PresentersPage() {
     }
   }, [selectedPresenter, form]);
 
-  const handleOpenAddDialog = () => {
-    setSelectedPresenter(null);
-    form.reset({ name: '', affiliation: '', imageUrl: '', bio: '' });
-    setAddPresenterOpen(true);
-  };
-
   const handleOpenEditDialog = (presenter: Presenter) => {
     setSelectedPresenter(presenter);
     setAddPresenterOpen(true);
@@ -258,7 +252,8 @@ export default function PresentersPage() {
               return (
                 <Card
                   key={presenter.id}
-                  className="group overflow-hidden"
+                  className="group overflow-hidden cursor-pointer"
+                  onClick={() => handleOpenEditDialog(presenter)}
                 >
                   <div className="relative aspect-[4/5] overflow-hidden">
                     {imageUrl ? (
@@ -290,87 +285,131 @@ export default function PresentersPage() {
         )}
       </div>
 
-      <Dialog open={isAddPresenterOpen} onOpenChange={setAddPresenterOpen}>
+      <Dialog open={isAddPresenterOpen} onOpenChange={(isOpen) => {
+        if (!isOpen) {
+          setSelectedPresenter(null);
+        }
+        setAddPresenterOpen(isOpen);
+      }}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle>
-              {selectedPresenter ? 'Edit Presenter' : 'Add a New Presenter'}
+              {selectedPresenter ? 'Presenter Details' : 'Add a New Presenter'}
             </DialogTitle>
             <DialogDescription>
               {selectedPresenter
-                ? 'Update the details for the presenter.'
+                ? "Information about the presenter."
                 : 'Enter the details for the new presenter.'}
             </DialogDescription>
           </DialogHeader>
-          <Form {...form}>
-            <form
-              id="presenter-form"
-              onSubmit={form.handleSubmit(onSubmit)}
-              className="space-y-4"
-            >
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Name</FormLabel>
-                    <FormControl>
-                      <Input placeholder="e.g. Jane Doe" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="affiliation"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Affiliation</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="e.g. Firebase University"
-                        {...field}
+          {selectedPresenter ? (
+            <div className="space-y-4 py-4">
+              <div className="relative aspect-[4/5] w-full overflow-hidden rounded-md">
+                 {selectedPresenter.imageUrl ? (
+                      <Image
+                        src={transformGsUrl(selectedPresenter.imageUrl)}
+                        alt={`Portrait of ${selectedPresenter.name}`}
+                        fill
+                        className="object-cover"
                       />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="imageUrl"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Photo URL</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="https://example.com/image.jpg"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="bio"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Biography</FormLabel>
-                    <FormControl>
-                      <Textarea
-                        placeholder="A short bio about the presenter."
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </form>
-          </Form>
+                    ) : (
+                       <div className="flex h-full w-full items-center justify-center bg-secondary">
+                        <span className="text-sm text-muted-foreground">No Image</span>
+                      </div>
+                    )}
+              </div>
+               <div>
+                  <h4 className="font-semibold text-sm">Name</h4>
+                  <p className="text-sm text-muted-foreground">
+                    {selectedPresenter.name}
+                  </p>
+                </div>
+                 <div>
+                  <h4 className="font-semibold text-sm">Affiliation</h4>
+                  <p className="text-sm text-muted-foreground">
+                    {selectedPresenter.affiliation}
+                  </p>
+                </div>
+              {selectedPresenter.bio && (
+                 <div>
+                  <h4 className="font-semibold text-sm">Bio</h4>
+                  <p className="text-sm text-muted-foreground whitespace-pre-line">
+                    {selectedPresenter.bio}
+                  </p>
+                </div>
+              )}
+            </div>
+          ) : (
+            <Form {...form}>
+              <form
+                id="presenter-form"
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="space-y-4"
+              >
+                <FormField
+                  control={form.control}
+                  name="name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="e.g. Jane Doe" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="affiliation"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Affiliation</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="e.g. Firebase University"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="imageUrl"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Photo URL</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="https://example.com/image.jpg"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="bio"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Biography</FormLabel>
+                      <FormControl>
+                        <Textarea
+                          placeholder="A short bio about the presenter."
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </form>
+            </Form>
+          )}
           <DialogFooter>
             <DialogClose asChild>
               <Button
@@ -378,19 +417,21 @@ export default function PresentersPage() {
                 variant="outline"
                 onClick={() => setAddPresenterOpen(false)}
               >
-                Cancel
+                Close
               </Button>
             </DialogClose>
-            <Button
-              type="submit"
-              form="presenter-form"
-              disabled={form.formState.isSubmitting}
-            >
-              {form.formState.isSubmitting && (
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              )}
-              {selectedPresenter ? 'Save Changes' : 'Save Presenter'}
-            </Button>
+            {!selectedPresenter && (
+               <Button
+                type="submit"
+                form="presenter-form"
+                disabled={form.formState.isSubmitting}
+              >
+                {form.formState.isSubmitting && (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                )}
+                Save Presenter
+              </Button>
+            )}
           </DialogFooter>
         </DialogContent>
       </Dialog>
