@@ -297,7 +297,7 @@ export default function SchedulePage() {
                         </a>
                       </Button>
                     )}
-                    {item.isSession && item.id !== 'p4' && item.id !== 'p11' && (
+                    {item.isSession && (
                       <Button asChild>
                         <Link
                           href={`/questions?sessionId=${item.id}&topic=${encodeURIComponent(item.title)}`}
