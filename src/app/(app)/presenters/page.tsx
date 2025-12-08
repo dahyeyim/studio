@@ -254,7 +254,7 @@ export default function PresentersPage() {
             <Loader2 className="h-8 w-8 animate-spin" />
           </div>
         ) : (
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          <div className="grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4">
             {filteredPresenters.map((presenter) => {
               if (!presenter) return null;
               const imageUrl = transformGsUrl(presenter.imageUrl);
