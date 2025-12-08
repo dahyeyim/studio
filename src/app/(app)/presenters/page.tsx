@@ -243,7 +243,7 @@ export default function PresentersPage() {
             <Input
               type="search"
               placeholder="Search by name..."
-              className="w-full rounded-lg bg-background pl-8 md:w-[280px]"
+              className="w-full rounded-lg bg-background pl-8"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
