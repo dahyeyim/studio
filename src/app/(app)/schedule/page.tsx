@@ -34,7 +34,6 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useToast } from '@/hooks/use-toast';
-import { staticSchedule } from '@/lib/data';
 import {
   Clock,
   Download,
@@ -51,8 +50,6 @@ import {
   collection,
   query,
   orderBy,
-  getDocs,
-  writeBatch,
   doc,
   addDoc,
   updateDoc,
@@ -91,7 +88,6 @@ export default function SchedulePage() {
   const { firestore } = useFirebase();
   const { toast } = useToast();
 
-  const [isSeeding, setIsSeeding] = useState(false);
   const [isFormOpen, setFormOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<ScheduleItem | null>(null);
 
@@ -120,33 +116,6 @@ export default function SchedulePage() {
       details: '',
     },
   });
-
-  useEffect(() => {
-    const seedData = async () => {
-      if (!firestore || sessionStorage.getItem('scheduleSeeded')) return;
-
-      setIsSeeding(true);
-      try {
-        const scheduleCollection = collection(firestore, 'schedules');
-        const snapshot = await getDocs(scheduleCollection);
-
-        if (snapshot.empty) {
-          const batch = writeBatch(firestore);
-          staticSchedule.forEach((item) => {
-            const docRef = doc(collection(firestore, 'schedules'));
-            batch.set(docRef, item);
-          });
-          await batch.commit();
-        }
-        sessionStorage.setItem('scheduleSeeded', 'true');
-      } catch (error) {
-        console.error('Error seeding schedule data:', error);
-      } finally {
-        setIsSeeding(false);
-      }
-    };
-    seedData();
-  }, [firestore]);
 
   useEffect(() => {
     if (isFormOpen) {
@@ -206,7 +175,7 @@ export default function SchedulePage() {
     }
   };
 
-  const isLoading = isLoadingSchedule || isSeeding;
+  const isLoading = isLoadingSchedule;
 
   return (
     <>
