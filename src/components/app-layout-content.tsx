@@ -14,7 +14,7 @@ export function AppLayoutContent({ children }: { children: ReactNode }) {
 
   return (
     <SidebarProvider>
-      <Sidebar collapsible={isMobile ? 'none' : 'offcanvas'}>
+      <Sidebar collapsible={'offcanvas'}>
         <AppSidebar />
       </Sidebar>
       <SidebarInset>{children}</SidebarInset>
