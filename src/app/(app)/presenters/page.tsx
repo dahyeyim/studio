@@ -52,19 +52,19 @@ interface Presenter {
   name: string;
   affiliation: string;
   bio?: string;
-  imageUrl: string;
+  imageUrl?: string;
 }
 
 const formSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters.'),
   affiliation: z.string().min(2, 'Affiliation must be at least 2 characters.'),
-  imageUrl: z.string().url('Please enter a valid URL for the image.'),
+  imageUrl: z.string().url('Please enter a valid URL for the image.').optional().or(z.literal('')),
   bio: z.string().optional(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
 
-const transformGsUrl = (url: string) => {
+const transformGsUrl = (url: string | undefined): string | undefined => {
   if (url && url.startsWith('gs://')) {
     const bucketAndPath = url.substring(5);
     const [bucket, ...pathParts] = bucketAndPath.split('/');
@@ -233,7 +233,7 @@ export default function PresentersPage() {
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {presenters?.map((presenter) => {
               if (!presenter) return null;
-              const imageUrl = presenter.imageUrl ? transformGsUrl(presenter.imageUrl) : '';
+              const imageUrl = transformGsUrl(presenter.imageUrl);
               return (
                 <Card
                   key={presenter.id}
@@ -368,5 +368,3 @@ export default function PresentersPage() {
     </>
   );
 }
-
-    
