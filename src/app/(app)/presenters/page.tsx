@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useForm, type SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -32,7 +32,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
-import { Loader2, PlusCircle } from 'lucide-react';
+import { Loader2, PlusCircle, Search } from 'lucide-react';
 import { useCollection, useFirebase, useMemoFirebase } from '@/firebase';
 import {
   collection,
@@ -41,10 +41,10 @@ import {
   query,
   doc,
   updateDoc,
+  addDoc,
 } from 'firebase/firestore';
 import Image from 'next/image';
 import { staticPresenters } from '@/lib/data';
-import { addDocumentNonBlocking } from '@/firebase/non-blocking-updates';
 import { useToast } from '@/hooks/use-toast';
 
 interface Presenter {
@@ -69,13 +69,16 @@ const transformGsUrl = (url?: string): string | undefined => {
     const bucketAndPath = url.substring(5);
     const [bucket, ...pathParts] = bucketAndPath.split('/');
     const path = pathParts.join('/');
-    return `https://firebasestorage.googleapis.com/v0/b/${bucket}/o/${encodeURIComponent(path)}?alt=media`;
+    return `https://firebasestorage.googleapis.com/v0/b/${bucket}/o/${encodeURIComponent(
+      path
+    )}?alt=media`;
   }
   return url;
 };
 
 export default function PresentersPage() {
   const { firestore, user } = useFirebase();
+  const [searchTerm, setSearchTerm] = useState('');
   const [selectedPresenter, setSelectedPresenter] = useState<Presenter | null>(
     null
   );
@@ -99,6 +102,14 @@ export default function PresentersPage() {
   );
   const { data: presenters, isLoading: isLoadingPresenters } =
     useCollection<Presenter>(presentersQuery);
+
+  const filteredPresenters = useMemo(() => {
+    if (!presenters) return [];
+    return presenters.filter((presenter) =>
+      presenter.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  }, [presenters, searchTerm]);
+
 
   useEffect(() => {
     const seedData = async () => {
@@ -186,7 +197,7 @@ export default function PresentersPage() {
       } else {
         // Add new presenter
         const presentersCollection = collection(firestore, 'presenters');
-        await addDocumentNonBlocking(presentersCollection, processedData);
+        await addDoc(presentersCollection, processedData);
         toast({
           title: 'Presenter Added',
           description: `${processedData.name} has been added to the list.`,
@@ -225,13 +236,26 @@ export default function PresentersPage() {
           </Button>
         </header>
 
+        <div className="mb-6">
+          <div className="relative">
+            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+            <Input
+              type="search"
+              placeholder="Search by name..."
+              className="w-full rounded-lg bg-background pl-8 md:w-[280px]"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
+        </div>
+
         {isLoading ? (
           <div className="flex h-full w-full items-center justify-center p-6">
             <Loader2 className="h-8 w-8 animate-spin" />
           </div>
         ) : (
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {presenters?.map((presenter) => {
+            {filteredPresenters.map((presenter) => {
               if (!presenter) return null;
               const imageUrl = transformGsUrl(presenter.imageUrl);
               return (
@@ -241,13 +265,17 @@ export default function PresentersPage() {
                   className="group cursor-pointer overflow-hidden"
                 >
                   <div className="relative aspect-[4/5] overflow-hidden">
-                    {imageUrl && (
+                    {imageUrl ? (
                       <Image
                         src={imageUrl}
                         alt={`Portrait of ${presenter.name}`}
                         fill
                         className="object-cover transition-transform duration-300 group-hover:scale-105"
                       />
+                    ) : (
+                       <div className="flex h-full w-full items-center justify-center bg-secondary">
+                        <span className="text-sm text-muted-foreground">No Image</span>
+                      </div>
                     )}
                   </div>
                   <CardHeader>
@@ -257,6 +285,11 @@ export default function PresentersPage() {
                 </Card>
               );
             })}
+             {filteredPresenters.length === 0 && !isLoading && (
+              <div className="col-span-full text-center text-muted-foreground py-10">
+                No presenters found.
+              </div>
+            )}
           </div>
         )}
       </div>
