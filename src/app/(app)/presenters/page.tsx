@@ -231,10 +231,6 @@ export default function PresentersPage() {
               Meet the speakers of the forum.
             </p>
           </div>
-          <Button onClick={handleOpenAddDialog}>
-            <PlusCircle className="mr-2" />
-            Add Presenter
-          </Button>
         </header>
 
         <div className="mb-6">
@@ -262,8 +258,7 @@ export default function PresentersPage() {
               return (
                 <Card
                   key={presenter.id}
-                  onClick={() => handleOpenEditDialog(presenter)}
-                  className="group cursor-pointer overflow-hidden"
+                  className="group overflow-hidden"
                 >
                   <div className="relative aspect-[4/5] overflow-hidden">
                     {imageUrl ? (
