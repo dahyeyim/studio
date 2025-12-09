@@ -163,7 +163,7 @@ export default function SchedulePage() {
                     {isKharakhorum && (
                       <div className="flex flex-col items-start gap-4 w-full">
                         <div>
-                          <p className="font-semibold text-sm mb-2">Mongolian Presenters</p>
+                          <p className="font-semibold text-sm mb-2">Mongolian Presenter</p>
                           <div className="flex flex-wrap gap-2">
                             <Button variant="outline" asChild>
                               <a href="#" target="_blank" rel="noopener noreferrer">
