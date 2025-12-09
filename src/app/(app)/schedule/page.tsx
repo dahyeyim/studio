@@ -179,23 +179,6 @@ export default function SchedulePage() {
                             </Button>
                           </div>
                         </div>
-                        <div>
-                          <p className="font-semibold text-sm mb-2">Korean Presenters</p>
-                          <div className="flex flex-wrap gap-2">
-                            <Button variant="outline" asChild>
-                              <a href="#" target="_blank" rel="noopener noreferrer">
-                                <Download className="mr-2 h-4 w-4" />
-                                Download Materials (KR)
-                              </a>
-                            </Button>
-                            <Button variant="outline" asChild>
-                              <a href="#" target="_blank" rel="noopener noreferrer">
-                                <Download className="mr-2 h-4 w-4" />
-                                Download Materials (MN)
-                              </a>
-                            </Button>
-                          </div>
-                        </div>
                       </div>
                     )}
                   </CardFooter>
