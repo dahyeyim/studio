@@ -121,7 +121,7 @@ export default function SchedulePage() {
                     </ul>
                   )}
                 </CardContent>
-                {((item.downloadUrl || item.downloadUrlKorean || item.downloadUrlMongolian) || item.isSession) && (
+                {((showDownload && (item.downloadUrl || item.downloadUrlKorean || item.downloadUrlMongolian)) || item.isSession) && (
                    <CardFooter className="flex flex-wrap gap-2">
                     {showDownload && item.downloadUrl && (
                       <Button variant="outline" asChild>
