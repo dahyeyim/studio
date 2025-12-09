@@ -241,10 +241,6 @@ export default function SchedulePage() {
               Follow the agenda and download presentation materials.
             </p>
           </div>
-          <Button onClick={() => handleOpenForm()}>
-            <PlusCircle className="mr-2 h-4 w-4" />
-            Add Item
-          </Button>
         </header>
 
         {isLoading ? (
