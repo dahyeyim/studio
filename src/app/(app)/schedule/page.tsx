@@ -123,62 +123,80 @@ export default function SchedulePage() {
                   )}
                 </CardContent>
                 {((showDownload && (item.downloadUrl || item.downloadUrlKorean || item.downloadUrlMongolian)) || item.isSession || isKharakhorum) && (
-                   <CardFooter className="flex flex-wrap gap-2">
-                    {showDownload && item.downloadUrl && (
-                      <Button variant="outline" asChild>
-                        <a href={item.downloadUrl} target="_blank" rel="noopener noreferrer">
-                          <Download className="mr-2 h-4 w-4" />
-                          Download
-                        </a>
-                      </Button>
-                    )}
-                    {showDownload && item.downloadUrlKorean && (
-                      <Button variant="outline" asChild>
-                        <a href={item.downloadUrlKorean} target="_blank" rel="noopener noreferrer">
-                          <Download className="mr-2 h-4 w-4" />
-                          Download Materials (KR)
-                        </a>
-                      </Button>
-                    )}
-                     {isKharakhorum && (
-                      <>
+                  <CardFooter className="flex flex-col items-start gap-4">
+                    <div className="flex flex-wrap gap-2">
+                      {showDownload && item.downloadUrl && (
                         <Button variant="outline" asChild>
-                          <a href="#" target="_blank" rel="noopener noreferrer">
+                          <a href={item.downloadUrl} target="_blank" rel="noopener noreferrer">
+                            <Download className="mr-2 h-4 w-4" />
+                            Download
+                          </a>
+                        </Button>
+                      )}
+                      {showDownload && item.downloadUrlKorean && (
+                        <Button variant="outline" asChild>
+                          <a href={item.downloadUrlKorean} target="_blank" rel="noopener noreferrer">
                             <Download className="mr-2 h-4 w-4" />
                             Download Materials (KR)
                           </a>
                         </Button>
+                      )}
+                      {showDownload && item.downloadUrlMongolian && (
                         <Button variant="outline" asChild>
-                          <a href="#" target="_blank" rel="noopener noreferrer">
+                          <a href={item.downloadUrlMongolian} target="_blank" rel="noopener noreferrer">
                             <Download className="mr-2 h-4 w-4" />
                             Download Materials (MN)
                           </a>
                         </Button>
-                         <Button variant="outline" asChild>
-                          <a href="#" target="_blank" rel="noopener noreferrer">
-                            <Download className="mr-2 h-4 w-4" />
-                            Download Materials (MN)
-                          </a>
+                      )}
+                      {item.isSession && (
+                        <Button asChild>
+                          <Link
+                            href={`/questions?sessionId=${item.id}&topic=${encodeURIComponent(item.title)}`}
+                          >
+                            <HelpCircle className="mr-2 h-4 w-4" />
+                            Go to Q&amp;A
+                          </Link>
                         </Button>
-                      </>
-                    )}
-                    {showDownload && item.downloadUrlMongolian && (
-                      <Button variant="outline" asChild>
-                        <a href={item.downloadUrlMongolian} target="_blank" rel="noopener noreferrer">
-                          <Download className="mr-2 h-4 w-4" />
-                          Download Materials (MN)
-                        </a>
-                      </Button>
-                    )}
-                    {item.isSession && (
-                      <Button asChild>
-                        <Link
-                          href={`/questions?sessionId=${item.id}&topic=${encodeURIComponent(item.title)}`}
-                        >
-                          <HelpCircle className="mr-2 h-4 w-4" />
-                          Go to Q&amp;A
-                        </Link>
-                      </Button>
+                      )}
+                    </div>
+                    {isKharakhorum && (
+                      <div className="flex flex-col items-start gap-4 w-full">
+                        <div>
+                          <p className="font-semibold text-sm mb-2">Mongolian Presenters</p>
+                          <div className="flex flex-wrap gap-2">
+                            <Button variant="outline" asChild>
+                              <a href="#" target="_blank" rel="noopener noreferrer">
+                                <Download className="mr-2 h-4 w-4" />
+                                Download Materials (KR)
+                              </a>
+                            </Button>
+                            <Button variant="outline" asChild>
+                              <a href="#" target="_blank" rel="noopener noreferrer">
+                                <Download className="mr-2 h-4 w-4" />
+                                Download Materials (MN)
+                              </a>
+                            </Button>
+                          </div>
+                        </div>
+                        <div>
+                          <p className="font-semibold text-sm mb-2">Korean Presenters</p>
+                          <div className="flex flex-wrap gap-2">
+                            <Button variant="outline" asChild>
+                              <a href="#" target="_blank" rel="noopener noreferrer">
+                                <Download className="mr-2 h-4 w-4" />
+                                Download Materials (KR)
+                              </a>
+                            </Button>
+                            <Button variant="outline" asChild>
+                              <a href="#" target="_blank" rel="noopener noreferrer">
+                                <Download className="mr-2 h-4 w-4" />
+                                Download Materials (MN)
+                              </a>
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
                     )}
                   </CardFooter>
                 )}
