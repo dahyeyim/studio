@@ -58,6 +58,8 @@ export default function SchedulePage() {
 
   const isLoading = isLoadingSchedule;
 
+  const specialTitles = ["Regional Development", "Urban Development"];
+
   return (
     <>
       <div className="flex flex-1 flex-col p-4 md:p-6">
@@ -78,7 +80,9 @@ export default function SchedulePage() {
           </div>
         ) : (
           <div className="space-y-6">
-            {sortedSchedule.map((item) => (
+            {sortedSchedule.map((item) => {
+              const showDownload = !specialTitles.includes(item.title);
+              return (
               <Card
                 key={item.id}
                 className={`overflow-hidden relative group ${
@@ -117,9 +121,9 @@ export default function SchedulePage() {
                     </ul>
                   )}
                 </CardContent>
-                {(item.downloadUrl || item.downloadUrlKorean || item.downloadUrlMongolian || item.isSession) && (
+                {((item.downloadUrl || item.downloadUrlKorean || item.downloadUrlMongolian) || item.isSession) && (
                    <CardFooter className="flex flex-wrap gap-2">
-                    {item.downloadUrl && (
+                    {showDownload && item.downloadUrl && (
                       <Button variant="outline" asChild>
                         <a href={item.downloadUrl} target="_blank" rel="noopener noreferrer">
                           <Download className="mr-2 h-4 w-4" />
@@ -127,7 +131,7 @@ export default function SchedulePage() {
                         </a>
                       </Button>
                     )}
-                    {item.downloadUrlKorean && (
+                    {showDownload && item.downloadUrlKorean && (
                       <Button variant="outline" asChild>
                         <a href={item.downloadUrlKorean} target="_blank" rel="noopener noreferrer">
                           <Download className="mr-2 h-4 w-4" />
@@ -135,7 +139,7 @@ export default function SchedulePage() {
                         </a>
                       </Button>
                     )}
-                    {item.downloadUrlMongolian && (
+                    {showDownload && item.downloadUrlMongolian && (
                       <Button variant="outline" asChild>
                         <a href={item.downloadUrlMongolian} target="_blank" rel="noopener noreferrer">
                           <Download className="mr-2 h-4 w-4" />
@@ -156,7 +160,7 @@ export default function SchedulePage() {
                   </CardFooter>
                 )}
               </Card>
-            ))}
+            )})}
              {sortedSchedule.length === 0 && !isLoading && (
               <Card>
                 <CardContent className="pt-6">
