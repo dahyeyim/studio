@@ -157,6 +157,22 @@
             "type": "string"
           },
           "description": "A list of detailed points about the session."
+        },
+        "downloadUrlKorean1": {
+          "type": "string",
+          "description": "URL for the first Korean downloadable material."
+        },
+        "downloadUrlKorean2": {
+          "type": "string",
+          "description": "URL for the second Korean downloadable material."
+        },
+        "downloadUrlMongolian1": {
+          "type": "string",
+          "description": "URL for the first Mongolian downloadable material."
+        },
+        "downloadUrlMongolian2": {
+          "type": "string",
+          "description": "URL for the second Mongolian downloadable material."
         }
       },
       "required": ["order", "title", "time", "isSession"]

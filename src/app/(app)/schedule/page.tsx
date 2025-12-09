@@ -60,7 +60,6 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import {
   Form,
@@ -92,6 +91,10 @@ const formSchema = z.object({
   downloadUrl: z.string().url().optional().or(z.literal('')),
   downloadUrlKorean: z.string().url().optional().or(z.literal('')),
   downloadUrlMongolian: z.string().url().optional().or(z.literal('')),
+  downloadUrlKorean1: z.string().url().optional().or(z.literal('')),
+  downloadUrlKorean2: z.string().url().optional().or(z.literal('')),
+  downloadUrlMongolian1: z.string().url().optional().or(z.literal('')),
+  downloadUrlMongolian2: z.string().url().optional().or(z.literal('')),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -106,6 +109,10 @@ export interface ScheduleItem {
   downloadUrl?: string;
   downloadUrlKorean?: string;
   downloadUrlMongolian?: string;
+  downloadUrlKorean1?: string;
+  downloadUrlKorean2?: string;
+  downloadUrlMongolian1?: string;
+  downloadUrlMongolian2?: string;
   isSession: boolean;
   details?: string[];
 }
@@ -151,6 +158,10 @@ export default function SchedulePage() {
         downloadUrl: '',
         downloadUrlKorean: '',
         downloadUrlMongolian: '',
+        downloadUrlKorean1: '',
+        downloadUrlKorean2: '',
+        downloadUrlMongolian1: '',
+        downloadUrlMongolian2: '',
       });
     }
     setFormOpen(true);
@@ -382,35 +393,35 @@ export default function SchedulePage() {
                             <div>
                               <p className="font-semibold text-sm mb-2">Mongolian Presenters</p>
                               <div className="flex flex-wrap gap-2">
-                                <Button variant="outline" asChild>
-                                  <a href="#" target="_blank" rel="noopener noreferrer">
+                                {item.downloadUrlMongolian1 && <Button variant="outline" asChild>
+                                  <a href={item.downloadUrlMongolian1} target="_blank" rel="noopener noreferrer">
                                     <Download className="mr-2 h-4 w-4" />
-                                    Download Materials (KR)
+                                    Download Materials (MN) 1
                                   </a>
-                                </Button>
-                                <Button variant="outline" asChild>
-                                  <a href="#" target="_blank" rel="noopener noreferrer">
+                                </Button>}
+                                {item.downloadUrlMongolian2 && <Button variant="outline" asChild>
+                                  <a href={item.downloadUrlMongolian2} target="_blank" rel="noopener noreferrer">
                                     <Download className="mr-2 h-4 w-4" />
-                                    Download Materials (MN)
+                                    Download Materials (MN) 2
                                   </a>
-                                </Button>
+                                </Button>}
                               </div>
                             </div>
                             <div>
                               <p className="font-semibold text-sm mb-2">Korean Presenters</p>
                               <div className="flex flex-wrap gap-2">
-                                <Button variant="outline" asChild>
-                                  <a href="#" target="_blank" rel="noopener noreferrer">
+                                {item.downloadUrlKorean1 && <Button variant="outline" asChild>
+                                  <a href={item.downloadUrlKorean1} target="_blank" rel="noopener noreferrer">
                                     <Download className="mr-2 h-4 w-4" />
-                                    Download Materials (KR)
+                                    Download Materials (KR) 1
                                   </a>
-                                </Button>
-                                <Button variant="outline" asChild>
-                                  <a href="#" target="_blank" rel="noopener noreferrer">
+                                </Button>}
+                                {item.downloadUrlKorean2 && <Button variant="outline" asChild>
+                                  <a href={item.downloadUrlKorean2} target="_blank" rel="noopener noreferrer">
                                     <Download className="mr-2 h-4 w-4" />
-                                    Download Materials (MN)
+                                    Download Materials (KR) 2
                                   </a>
-                                </Button>
+                                </Button>}
                               </div>
                             </div>
                           </div>
@@ -560,6 +571,58 @@ export default function SchedulePage() {
                     <FormLabel>Download URL (Mongolian)</FormLabel>
                     <FormControl>
                       <Input placeholder="https://example.com/download-mn" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+               <FormField
+                control={form.control}
+                name="downloadUrlKorean1"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Download URL (Korean) 1</FormLabel>
+                    <FormControl>
+                      <Input placeholder="https://example.com/download-kr-1" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="downloadUrlKorean2"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Download URL (Korean) 2</FormLabel>
+                    <FormControl>
+                      <Input placeholder="https://example.com/download-kr-2" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="downloadUrlMongolian1"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Download URL (Mongolian) 1</FormLabel>
+                    <FormControl>
+                      <Input placeholder="https://example.com/download-mn-1" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="downloadUrlMongolian2"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Download URL (Mongolian) 2</FormLabel>
+                    <FormControl>
+                      <Input placeholder="https://example.com/download-mn-2" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
