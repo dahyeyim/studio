@@ -5,7 +5,7 @@ import { useForm, type SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useFormState, useFormStatus } from 'react-dom';
-import { collection, query, where, getDocs, orderBy } from 'firebase/firestore';
+import { collection, query, where, getDocs, orderBy, doc } from 'firebase/firestore';
 
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -38,9 +38,10 @@ import {
   Sparkles,
   AlertCircle,
   MessageSquarePlus,
+  Trash2,
 } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from './ui/alert';
-import { useCollection, useFirebase, useMemoFirebase } from '@/firebase';
+import { useCollection, useFirebase, useMemoFirebase, deleteDocumentNonBlocking } from '@/firebase';
 import { addDocumentNonBlocking } from '@/firebase/non-blocking-updates';
 import { useToast } from '@/hooks/use-toast';
 import type { ScheduleItem } from '@/app/(app)/schedule/page';
@@ -187,6 +188,25 @@ export function QuestionInterface({
     }
   };
 
+  const handleDeleteQuestion = (questionId: string) => {
+    if (!firestore) return;
+    try {
+      const questionRef = doc(firestore, 'questions', questionId);
+      deleteDocumentNonBlocking(questionRef);
+      toast({
+        title: 'Question Deleted',
+        description: 'The question has been removed.',
+      });
+    } catch (error) {
+      console.error('Error deleting question:', error);
+      toast({
+        variant: 'destructive',
+        title: 'Deletion Failed',
+        description: 'Could not delete the question. Please try again.',
+      });
+    }
+  };
+
   const getPriorityBadgeVariant = (score: number) => {
     if (score >= 8) return 'destructive';
     if (score >= 5) return 'default';
@@ -295,12 +315,21 @@ export function QuestionInterface({
                     {questionsBySession[sessionId].map((q) => (
                       <li
                         key={q.id}
-                        className="rounded-md border bg-secondary/50 p-3"
+                        className="rounded-md border bg-secondary/50 p-3 relative group"
                       >
-                        <p className="text-sm">{q.text}</p>
+                        <p className="text-sm pr-8">{q.text}</p>
                         <p className="mt-2 text-xs text-muted-foreground">
                           From: {q.attendeeName} ({q.attendeeAffiliation})
                         </p>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="absolute top-1 right-1 h-7 w-7 text-muted-foreground opacity-0 group-hover:opacity-100"
+                          onClick={() => handleDeleteQuestion(q.id)}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                          <span className="sr-only">Delete question</span>
+                        </Button>
                       </li>
                     ))}
                   </ul>

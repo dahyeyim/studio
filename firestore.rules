@@ -99,7 +99,8 @@ service cloud.firestore {
      * @path /questions/{questionId}
      * @allow (get, list) Any authenticated user can read the list of questions.
      * @allow (create) An authenticated user can create a question if they are the owner and provide a valid sessionId.
-     * @allow (update, delete) The owner of the question can modify or delete it.
+     * @allow (update) The owner of the question can modify it.
+     * @allow (delete) Any authenticated user can delete a question.
      * @principle Enforces document ownership for writes and ensures data integrity.
      */
     match /questions/{questionId} {
@@ -107,7 +108,8 @@ service cloud.firestore {
       allow create: if isOwner(request.resource.data.creatorId) 
                       && request.resource.data.sessionId is string
                       && request.resource.data.sessionId.size() > 0;
-      allow update, delete: if isExistingOwner(resource.data.creatorId);
+      allow update: if isExistingOwner(resource.data.creatorId);
+      allow delete: if isSignedIn();
     }
 
     /**
