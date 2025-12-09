@@ -53,6 +53,16 @@ service cloud.firestore {
     function isSignedIn() {
       return request.auth != null;
     }
+    
+    /**
+     * Checks if the current user is a designated admin.
+     * Replace 'YOUR_ADMIN_UID' with the actual UID of the admin user.
+     */
+    function isAdmin() {
+      // TODO: Replace with the actual admin UID in a production environment.
+      return request.auth.uid == '8hLtc9h4YdSTNfWiUvGgTFEg0U32';
+    }
+
 
     /**
      * Checks if the currently authenticated user's UID matches the provided userId.
@@ -100,7 +110,7 @@ service cloud.firestore {
      * @allow (get, list) Any authenticated user can read the list of questions.
      * @allow (create) An authenticated user can create a question if they are the owner and provide a valid sessionId.
      * @allow (update) The owner of the question can modify it.
-     * @allow (delete) Any authenticated user can delete a question.
+     * @allow (delete) The owner of the question or an admin can delete a question.
      * @principle Enforces document ownership for writes and ensures data integrity.
      */
     match /questions/{questionId} {
@@ -109,7 +119,7 @@ service cloud.firestore {
                       && request.resource.data.sessionId is string
                       && request.resource.data.sessionId.size() > 0;
       allow update: if isExistingOwner(resource.data.creatorId);
-      allow delete: if isSignedIn();
+      allow delete: if isExistingOwner(resource.data.creatorId) || isAdmin();
     }
 
     /**
@@ -117,7 +127,7 @@ service cloud.firestore {
      * @path /presenters/{presenterId}
      * @allow (get, list) Any authenticated user can read presenter information.
      * @allow (create, update) Any authenticated user can add or update a presenter.
-     * @deny (delete) Presenter data is considered static and managed by an administrator.
+     * @deny (delete) Presenter data is considered static and is managed by an administrator.
      * @principle Makes presenter information public while allowing modifications.
      */
     match /presenters/{presenterId} {

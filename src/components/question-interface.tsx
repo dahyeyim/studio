@@ -102,6 +102,8 @@ export function QuestionInterface({
 }: QuestionInterfaceProps) {
   const { firestore, user } = useFirebase();
   const { toast } = useToast();
+  // This is a placeholder, in a real app, you'd get this from a config or user roles
+  const ADMIN_UID = "8hLtc9h4YdSTNfWiUvGgTFEg0U32";
 
   const questionsQuery = useMemoFirebase(
     () => (firestore ? query(collection(firestore, 'questions')) : null),
@@ -312,7 +314,9 @@ export function QuestionInterface({
                 </CardHeader>
                 <CardContent>
                   <ul className="space-y-4">
-                    {questionsBySession[sessionId].map((q) => (
+                    {questionsBySession[sessionId].map((q) => {
+                      const canDelete = user && (user.uid === q.creatorId || user.uid === ADMIN_UID);
+                      return (
                       <li
                         key={q.id}
                         className="rounded-md border bg-secondary/50 p-3 relative group"
@@ -321,17 +325,20 @@ export function QuestionInterface({
                         <p className="mt-2 text-xs text-muted-foreground">
                           From: {q.attendeeName} ({q.attendeeAffiliation})
                         </p>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="absolute top-1 right-1 h-7 w-7 text-muted-foreground opacity-0 group-hover:opacity-100"
-                          onClick={() => handleDeleteQuestion(q.id)}
-                        >
-                          <Trash2 className="h-4 w-4" />
-                          <span className="sr-only">Delete question</span>
-                        </Button>
+                        {canDelete && (
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="absolute top-1 right-1 h-7 w-7 text-muted-foreground opacity-0 group-hover:opacity-100"
+                            onClick={() => handleDeleteQuestion(q.id)}
+                          >
+                            <Trash2 className="h-4 w-4" />
+                            <span className="sr-only">Delete question</span>
+                          </Button>
+                        )}
                       </li>
-                    ))}
+                      );
+                    })}
                   </ul>
                 </CardContent>
               </Card>
