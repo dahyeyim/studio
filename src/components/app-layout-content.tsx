@@ -7,10 +7,8 @@ import {
   SidebarInset,
 } from '@/components/ui/sidebar';
 import type { ReactNode } from 'react';
-import { useIsMobile } from '@/hooks/use-mobile';
 
 export function AppLayoutContent({ children }: { children: ReactNode }) {
-  const isMobile = useIsMobile();
 
   return (
     <SidebarProvider>
