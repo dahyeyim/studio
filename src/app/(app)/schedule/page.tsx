@@ -82,6 +82,7 @@ export default function SchedulePage() {
           <div className="space-y-6">
             {sortedSchedule.map((item) => {
               const showDownload = !specialTitles.includes(item.title);
+              const isKharakhorum = item.title === "KHARAKHORUM CITY";
               return (
               <Card
                 key={item.id}
@@ -121,7 +122,7 @@ export default function SchedulePage() {
                     </ul>
                   )}
                 </CardContent>
-                {((showDownload && (item.downloadUrl || item.downloadUrlKorean || item.downloadUrlMongolian)) || item.isSession) && (
+                {((showDownload && (item.downloadUrl || item.downloadUrlKorean || item.downloadUrlMongolian)) || item.isSession || isKharakhorum) && (
                    <CardFooter className="flex flex-wrap gap-2">
                     {showDownload && item.downloadUrl && (
                       <Button variant="outline" asChild>
@@ -138,6 +139,28 @@ export default function SchedulePage() {
                           Download Materials (KR)
                         </a>
                       </Button>
+                    )}
+                     {isKharakhorum && (
+                      <>
+                        <Button variant="outline" asChild>
+                          <a href="#" target="_blank" rel="noopener noreferrer">
+                            <Download className="mr-2 h-4 w-4" />
+                            Download Materials (KR)
+                          </a>
+                        </Button>
+                        <Button variant="outline" asChild>
+                          <a href="#" target="_blank" rel="noopener noreferrer">
+                            <Download className="mr-2 h-4 w-4" />
+                            Download Materials (MN)
+                          </a>
+                        </Button>
+                         <Button variant="outline" asChild>
+                          <a href="#" target="_blank" rel="noopener noreferrer">
+                            <Download className="mr-2 h-4 w-4" />
+                            Download Materials (MN)
+                          </a>
+                        </Button>
+                      </>
                     )}
                     {showDownload && item.downloadUrlMongolian && (
                       <Button variant="outline" asChild>
