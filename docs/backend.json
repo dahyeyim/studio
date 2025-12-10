@@ -74,6 +74,14 @@
         "attendeeAffiliation": {
           "type": "string",
           "description": "The affiliation of the attendee who submitted the question."
+        },
+        "translatedText": {
+          "type": "string",
+          "description": "The translated content of the question."
+        },
+        "originalLanguage": {
+          "type": "string",
+          "description": "The original language of the question (e.g., 'Korean', 'Mongolian')."
         }
       },
       "required": [

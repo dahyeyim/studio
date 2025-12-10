@@ -31,7 +31,7 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion';
 import { Badge } from '@/components/ui/badge';
-import { getPrioritizedQuestions } from '@/app/actions';
+import { getPrioritizedQuestions, translateQuestionAction } from '@/app/actions';
 import type { PrioritizeQuestionsOutput } from '@/ai/flows/prioritize-questions-with-ai';
 import {
   Loader2,
@@ -59,6 +59,8 @@ type FormValues = z.infer<typeof formSchema>;
 interface Question {
   id: string;
   text: string;
+  translatedText?: string;
+  originalLanguage?: string;
   sessionId: string;
   creatorId: string;
   attendeeName: string;
@@ -151,6 +153,7 @@ export function QuestionInterface({
     }
 
     try {
+      // Step 1: Get Attendee Info
       const attendeesQuery = query(
         collection(firestore, 'attendees'),
         where('creatorId', '==', user.uid)
@@ -165,13 +168,27 @@ export function QuestionInterface({
         attendeeName = attendeeData.name;
         attendeeAffiliation = attendeeData.affiliation;
       }
+      
+      // Step 2: Translate Question
+      const { translation, error: translationError } = await translateQuestionAction({ question: data.question });
 
+      if (translationError) {
+        toast({
+          variant: "destructive",
+          title: "Translation Failed",
+          description: "Could not translate the question. It will be submitted in its original language.",
+        });
+      }
+
+      // Step 3: Save Question with translation data
       const questionData = {
         text: data.question,
         creatorId: user.uid,
         sessionId: sessionId,
         attendeeName,
         attendeeAffiliation,
+        translatedText: translation?.translatedQuestion || null,
+        originalLanguage: translation?.originalLanguage || 'Other',
       };
 
       addDocumentNonBlocking(collection(firestore, 'questions'), questionData);
@@ -185,7 +202,7 @@ export function QuestionInterface({
        toast({
          variant: "destructive",
          title: "Submission Failed",
-         description: "Could not fetch attendee details. Please try again.",
+         description: "Could not submit your question. Please try again.",
        });
     }
   };
@@ -316,12 +333,18 @@ export function QuestionInterface({
                   <ul className="space-y-4">
                     {questionsBySession[sessionId].map((q) => {
                       const canDelete = user && (user.uid === q.creatorId || user.uid === ADMIN_UID);
+                      const displayTranslation = q.translatedText && q.originalLanguage !== 'Other';
                       return (
                       <li
                         key={q.id}
                         className="rounded-md border bg-secondary/50 p-3 relative group"
                       >
-                        <p className="text-sm pr-8">{q.text}</p>
+                        <p className="text-sm pr-8">
+                          {q.text}
+                          {displayTranslation && (
+                            <span className="text-muted-foreground ml-2">({q.translatedText})</span>
+                          )}
+                        </p>
                         <p className="mt-2 text-xs text-muted-foreground">
                           From: {q.attendeeName} ({q.attendeeAffiliation})
                         </p>

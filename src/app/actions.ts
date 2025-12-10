@@ -5,6 +5,11 @@ import {
   type PrioritizeQuestionsInput,
   type PrioritizeQuestionsOutput,
 } from '@/ai/flows/prioritize-questions-with-ai';
+import {
+  translateQuestion,
+  type TranslateQuestionInput,
+  type TranslateQuestionOutput,
+} from '@/ai/flows/translate-question-flow';
 
 export async function getPrioritizedQuestions(
   data: PrioritizeQuestionsInput
@@ -23,5 +28,17 @@ export async function getPrioritizedQuestions(
   } catch (error) {
     console.error('Error prioritizing questions:', error);
     return { error: 'Failed to prioritize questions. Please try again.' };
+  }
+}
+
+export async function translateQuestionAction(
+  data: TranslateQuestionInput
+): Promise<{ translation?: TranslateQuestionOutput; error?: string }> {
+  try {
+    const translation = await translateQuestion(data);
+    return { translation };
+  } catch (error) {
+    console.error('Error translating question:', error);
+    return { error: 'Failed to translate question. Please try again.' };
   }
 }
