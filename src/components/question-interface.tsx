@@ -1,10 +1,10 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useActionState } from 'react';
 import { useForm, type SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { useFormState, useFormStatus } from 'react-dom';
+import { useFormStatus } from 'react-dom';
 import { collection, query, where, getDocs, orderBy, doc } from 'firebase/firestore';
 
 import { Button } from '@/components/ui/button';
@@ -120,7 +120,7 @@ export function QuestionInterface({
   );
   const { data: schedule } = useCollection<ScheduleItem>(scheduleQuery);
 
-  const [state, formAction] = useFormState(
+  const [state, formAction] = useActionState(
     getPrioritizedQuestions,
     initialState
   );
